@@ -52,7 +52,8 @@ export const ClientsList = ({
   });
 
   const onSubmit = (data: ClientFormValues) => {
-    onAddClient(data);
+    onNewClientDataChange(data);
+    onAddClient();
     form.reset();
   };
 
