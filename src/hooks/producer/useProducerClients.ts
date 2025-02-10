@@ -3,6 +3,24 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+type ProducerClientResponse = {
+  id: string;
+  max_contracts: number;
+  status: string;
+  client_id: string;
+  clients: {
+    id: string;
+    profiles: {
+      name: string;
+    }[];
+    mt5_accounts: {
+      account_number: string;
+      balance: number;
+      algo_trading: boolean;
+    }[];
+  } | null;
+}
+
 export const useProducerClients = () => {
   const { toast } = useToast();
 
@@ -32,7 +50,7 @@ export const useProducerClients = () => {
 
       if (error) throw error;
 
-      return producerClients.map(pc => ({
+      return (producerClients as ProducerClientResponse[]).map(pc => ({
         id: pc.id,
         name: pc.clients?.profiles?.[0]?.name || 'Sem nome',
         account: pc.clients?.mt5_accounts?.[0]?.account_number || 'N/A',
