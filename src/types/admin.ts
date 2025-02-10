@@ -1,8 +1,12 @@
+
+export type UserRole = 'admin' | 'producer' | 'client';
+
 export type Producer = {
   id: string;
   name: string;
   email?: string;
   cpf?: string;
+  role: UserRole;
   status: string;
   clients: number;
   revenue: number;

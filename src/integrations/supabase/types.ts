@@ -71,13 +71,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "fk_clients_profile"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mt5_accounts: {
@@ -112,13 +105,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "fk_mt5_accounts_client"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "mt5_accounts_user_id_fkey"
             columns: ["user_id"]
@@ -158,20 +144,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "fk_producer_clients_client"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_producer_clients_producer"
-            columns: ["producer_id"]
-            isOneToOne: false
-            referencedRelation: "producers"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "producer_clients_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -194,9 +166,7 @@ export type Database = {
           document_verified: boolean | null
           id: string
           monthly_fee_per_client: number | null
-          partnership_model:
-            | Database["public"]["Enums"]["partnership_model"]
-            | null
+          partnership_model: Database["public"]["Enums"]["partnership_model"]
           updated_at: string
         }
         Insert: {
@@ -205,9 +175,7 @@ export type Database = {
           document_verified?: boolean | null
           id: string
           monthly_fee_per_client?: number | null
-          partnership_model?:
-            | Database["public"]["Enums"]["partnership_model"]
-            | null
+          partnership_model?: Database["public"]["Enums"]["partnership_model"]
           updated_at?: string
         }
         Update: {
@@ -216,9 +184,7 @@ export type Database = {
           document_verified?: boolean | null
           id?: string
           monthly_fee_per_client?: number | null
-          partnership_model?:
-            | Database["public"]["Enums"]["partnership_model"]
-            | null
+          partnership_model?: Database["public"]["Enums"]["partnership_model"]
           updated_at?: string
         }
         Relationships: [
@@ -239,7 +205,7 @@ export type Database = {
           id: string
           name: string | null
           phone: string | null
-          role: string | null
+          role: Database["public"]["Enums"]["user_role"]
           updated_at: string
         }
         Insert: {
@@ -249,7 +215,7 @@ export type Database = {
           id: string
           name?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Update: {
@@ -259,7 +225,7 @@ export type Database = {
           id?: string
           name?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
         }
         Relationships: []
@@ -324,6 +290,7 @@ export type Database = {
     }
     Enums: {
       partnership_model: "nomos" | "independent"
+      user_role: "admin" | "producer" | "client"
     }
     CompositeTypes: {
       [_ in never]: never

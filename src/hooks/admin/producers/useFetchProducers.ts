@@ -17,6 +17,7 @@ export const useFetchProducers = () => {
           name,
           email,
           cpf,
+          role,
           producers!inner (
             document_verified,
             business_info,
@@ -36,6 +37,7 @@ export const useFetchProducers = () => {
         name: producer.name || 'Sem nome',
         email: producer.email,
         cpf: producer.cpf,
+        role: producer.role,
         status: producer.producers?.document_verified ? "Ativo" : "Pendente",
         clients: 0,
         revenue: 0,
