@@ -10,7 +10,7 @@ type ProducerClientResponse = {
   client_id: string;
   clients: {
     id: string;
-    profiles: {
+    profiles!fk_clients_profile: {
       name: string;
     }[];
     mt5_accounts: {
@@ -52,7 +52,7 @@ export const useProducerClients = () => {
 
       return (producerClients as ProducerClientResponse[]).map(pc => ({
         id: pc.id,
-        name: pc.clients?.profiles?.[0]?.name || 'Sem nome',
+        name: pc.clients?.profiles!fk_clients_profile?.[0]?.name || 'Sem nome',
         account: pc.clients?.mt5_accounts?.[0]?.account_number || 'N/A',
         monthlyResult: 0, // Será implementado com trading_results
         status: pc.status || 'Inativo',
@@ -114,7 +114,7 @@ export const useProducerClients = () => {
       console.error('Erro ao atualizar limite de contratos:', error);
       toast({
         title: "Erro",
-        description: "Ocorreu um erro ao atualizar o limite de contratos.",
+        description: "Ocorrer um erro ao atualizar o limite de contratos.",
         variant: "destructive"
       });
     }
