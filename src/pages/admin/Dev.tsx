@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ const AdminDev = () => {
   const { toast } = useToast();
   const [mt5Endpoint, setMt5Endpoint] = useState("");
   const [webhookEndpoint, setWebhookEndpoint] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
 
   // Estado para simular endpoints salvos
   const [savedEndpoints, setSavedEndpoints] = useState<{
@@ -28,6 +29,13 @@ const AdminDev = () => {
     mt5: [],
     webhooks: [],
   });
+
+  // Gera um URL único para webhook quando o componente monta
+  useEffect(() => {
+    const uniqueId = crypto.randomUUID();
+    const baseUrl = window.location.origin;
+    setWebhookUrl(`${baseUrl}/api/webhook/${uniqueId}`);
+  }, []);
 
   const handleSaveMT5Endpoint = () => {
     if (!mt5Endpoint) return;
@@ -52,6 +60,14 @@ const AdminDev = () => {
     toast({
       title: "Webhook adicionado",
       description: "O webhook foi salvo com sucesso",
+    });
+  };
+
+  const handleCopyWebhookUrl = () => {
+    navigator.clipboard.writeText(webhookUrl);
+    toast({
+      title: "URL copiado",
+      description: "O URL do webhook foi copiado para a área de transferência",
     });
   };
 
@@ -141,7 +157,20 @@ const AdminDev = () => {
         <TabsContent value="webhook">
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Configuração de Webhooks</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="p-4 bg-gray-50 rounded-lg border">
+                <Label className="text-sm font-medium">Seu URL de Webhook</Label>
+                <div className="mt-2 flex items-center gap-2">
+                  <Input value={webhookUrl} readOnly className="bg-white font-mono text-sm" />
+                  <Button onClick={handleCopyWebhookUrl} variant="outline">
+                    Copiar
+                  </Button>
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  Use este URL para configurar o webhook no seu processador de pagamentos.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="webhook-endpoint">Novo Webhook</Label>
                 <div className="flex gap-2">
