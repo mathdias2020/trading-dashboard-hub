@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/integrations/supabase/adminClient";
 import { NewClientData } from "@/types/admin";
 
 export const useClientManagement = () => {
@@ -20,7 +20,7 @@ export const useClientManagement = () => {
   const handleAddClient = async (producerId: string) => {
     try {
       // Create new user with admin API using service role
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: newClientData.email,
         password: newClientData.password,
         email_confirm: true,
@@ -34,7 +34,7 @@ export const useClientManagement = () => {
 
       if (authData.user) {
         // Create MT5 account entry
-        const { error: mt5Error } = await supabase
+        const { error: mt5Error } = await supabaseAdmin
           .from('mt5_accounts')
           .insert([{
             user_id: authData.user.id,
@@ -45,7 +45,7 @@ export const useClientManagement = () => {
         if (mt5Error) throw mt5Error;
 
         // Create producer-client relationship
-        const { error: relationError } = await supabase
+        const { error: relationError } = await supabaseAdmin
           .from('producer_clients')
           .insert([{
             producer_id: producerId,
