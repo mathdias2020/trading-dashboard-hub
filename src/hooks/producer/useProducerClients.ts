@@ -3,22 +3,28 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface Profile {
+  name: string;
+}
+
+interface MT5Account {
+  account_number: string;
+  balance: number;
+  algo_trading: boolean;
+}
+
+interface ClientData {
+  id: string;
+  profiles: Profile[];
+  mt5_accounts: MT5Account[];
+}
+
 type ProducerClientResponse = {
   id: string;
   max_contracts: number;
   status: string;
   client_id: string;
-  clients: {
-    id: string;
-    profiles!fk_clients_profile: {
-      name: string;
-    }[];
-    mt5_accounts: {
-      account_number: string;
-      balance: number;
-      algo_trading: boolean;
-    }[];
-  } | null;
+  clients: ClientData | null;
 }
 
 export const useProducerClients = () => {
@@ -34,9 +40,9 @@ export const useProducerClients = () => {
           max_contracts,
           status,
           client_id,
-          clients!producer_clients_client_id_fkey (
+          clients (
             id,
-            profiles!fk_clients_profile (
+            profiles (
               name
             ),
             mt5_accounts (
@@ -52,7 +58,7 @@ export const useProducerClients = () => {
 
       return (producerClients as ProducerClientResponse[]).map(pc => ({
         id: pc.id,
-        name: pc.clients?.profiles!fk_clients_profile?.[0]?.name || 'Sem nome',
+        name: pc.clients?.profiles?.[0]?.name || 'Sem nome',
         account: pc.clients?.mt5_accounts?.[0]?.account_number || 'N/A',
         monthlyResult: 0, // Será implementado com trading_results
         status: pc.status || 'Inativo',
