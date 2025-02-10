@@ -19,7 +19,7 @@ export const useClientManagement = () => {
 
   const handleAddClient = async (producerId: string) => {
     try {
-      // Create new user with admin API
+      // Create new user with admin API using service role
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: newClientData.email,
         password: newClientData.password,
