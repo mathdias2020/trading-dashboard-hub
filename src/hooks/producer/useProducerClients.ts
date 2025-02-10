@@ -18,7 +18,7 @@ export const useProducerClients = () => {
           client_id,
           clients!inner (
             id,
-            profiles!inner (
+            profiles (
               name
             ),
             mt5_accounts (
@@ -34,7 +34,7 @@ export const useProducerClients = () => {
 
       return producerClients.map(pc => ({
         id: pc.id,
-        name: pc.clients?.profiles?.name || 'Sem nome',
+        name: pc.clients?.profiles?.[0]?.name || 'Sem nome',
         account: pc.clients?.mt5_accounts?.[0]?.account_number || 'N/A',
         monthlyResult: 0, // Será implementado com trading_results
         status: pc.status || 'Inativo',
