@@ -7,6 +7,15 @@ export const useEditProducer = (onSuccess: () => void) => {
   const { toast } = useToast();
 
   const handleEditProducer = async (producer: Producer, data: any) => {
+    if (!producer || !data) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Dados do produtor inválidos",
+      });
+      return;
+    }
+
     try {
       const { error: profileError } = await supabase
         .from('profiles')

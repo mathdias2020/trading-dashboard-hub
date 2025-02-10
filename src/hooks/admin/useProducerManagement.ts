@@ -9,8 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 export const useProducerManagement = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const { toast } = useToast();
-  
   const { producers, fetchProducers } = useFetchProducers();
+  
   const { 
     isAddProducerDialogOpen, 
     setIsAddProducerDialogOpen, 
@@ -18,9 +18,12 @@ export const useProducerManagement = () => {
     setNewProducerData, 
     handleAddProducer 
   } = useAddProducer(fetchProducers);
+
   const { handleEditProducer } = useEditProducer(fetchProducers);
 
   const handleSelectProducer = (producer: Producer) => {
+    if (!producer) return;
+    
     setSelectedProducer(producer);
     toast({
       title: "Produtor selecionado",
