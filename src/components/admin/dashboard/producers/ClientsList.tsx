@@ -52,7 +52,17 @@ export const ClientsList = ({
   });
 
   const onSubmit = (data: ClientFormValues) => {
-    onNewClientDataChange(data);
+    // Since ClientFormValues already matches the structure of NewClientData
+    // and the Zod schema ensures all fields are present,
+    // we can safely pass the data
+    onNewClientDataChange({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      mt5Account: data.mt5Account,
+      mt5Password: data.mt5Password,
+      maxContracts: data.maxContracts
+    });
     onAddClient();
     form.reset();
   };
@@ -187,3 +197,4 @@ export const ClientsList = ({
     </Card>
   );
 };
+
