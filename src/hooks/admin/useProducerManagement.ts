@@ -72,9 +72,29 @@ export const useProducerManagement = () => {
 
   const handleAddProducer = async () => {
     try {
+      // Validate required fields
+      if (!newProducerData.email || !newProducerData.password) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Email e senha são obrigatórios",
+        });
+        return;
+      }
+
+      // Validate email format
+      if (!newProducerData.email.includes('@')) {
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: "Por favor insira um email válido",
+        });
+        return;
+      }
+
       // Create user with admin client to skip email verification
       const { data: userData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
-        email: newProducerData.email,
+        email: newProducerData.email.trim(),
         password: newProducerData.password,
         email_confirm: true,
         user_metadata: {
@@ -82,7 +102,15 @@ export const useProducerManagement = () => {
         }
       });
 
-      if (createUserError) throw createUserError;
+      if (createUserError) {
+        console.error('Error creating producer:', createUserError);
+        toast({
+          variant: "destructive",
+          title: "Erro",
+          description: createUserError.message || "Não foi possível adicionar o produtor",
+        });
+        return;
+      }
 
       if (userData.user) {
         toast({
@@ -91,6 +119,7 @@ export const useProducerManagement = () => {
         });
 
         setIsAddProducerDialogOpen(false);
+        setNewProducerData({ email: "", password: "" }); // Reset form
         fetchProducers();
       }
     } catch (error) {
