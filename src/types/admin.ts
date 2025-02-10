@@ -24,3 +24,13 @@ export type Notification = {
   date: string;
   status: "pending" | "resolved";
 };
+
+export type NewClientData = {
+  name: string;
+  email: string;
+  password: string;
+  mt5Account: string;
+  mt5Password: string;
+  maxContracts: number;
+};
+

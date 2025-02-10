@@ -7,7 +7,7 @@ import { OverviewCards } from "@/components/admin/dashboard/OverviewCards";
 import { ProducersList } from "@/components/admin/dashboard/ProducersList";
 import { ProducersManagement } from "@/components/admin/dashboard/ProducersManagement";
 import { NotificationsView } from "@/components/admin/dashboard/NotificationsView";
-import { Producer, Client, Notification } from "@/types/admin";
+import { Producer, Client, Notification, NewClientData } from "@/types/admin";
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<"overview" | "producers" | "notifications">("overview");
@@ -16,12 +16,14 @@ const AdminDashboard = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddProducerDialogOpen, setIsAddProducerDialogOpen] = useState(false);
-  const [newClientData, setNewClientData] = useState({
+  const [isAddClientDialogOpen, setIsAddClientDialogOpen] = useState(false);
+  const [newClientData, setNewClientData] = useState<NewClientData>({
     name: "",
     email: "",
     password: "",
-    cpf: "",
-    phone: "",
+    mt5Account: "",
+    mt5Password: "",
+    maxContracts: 1
   });
   const [newProducerData, setNewProducerData] = useState({
     email: "",
@@ -65,7 +67,6 @@ const AdminDashboard = () => {
 
       setProducers(formattedProducers);
 
-      // Fetch clients count for each producer
       for (const producer of formattedProducers) {
         const { count } = await supabase
           .from('producer_clients')
@@ -86,17 +87,17 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleAddClient = async (producerId: string) => {
+  const handleAddClient = async () => {
     try {
+      if (!selectedProducer) return;
+
+      // Create user account
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newClientData.email,
         password: newClientData.password,
         options: {
           data: {
-            name: newClientData.name,
             role: 'client',
-            cpf: newClientData.cpf,
-            phone: newClientData.phone,
           }
         }
       });
@@ -104,11 +105,24 @@ const AdminDashboard = () => {
       if (authError) throw authError;
 
       if (authData.user) {
+        // Create MT5 account
+        const { error: mt5Error } = await supabase
+          .from('mt5_accounts')
+          .insert([{
+            user_id: authData.user.id,
+            account_number: newClientData.mt5Account,
+            mt5_password: newClientData.mt5Password,
+          }]);
+
+        if (mt5Error) throw mt5Error;
+
+        // Create producer-client relationship
         const { error: relationError } = await supabase
           .from('producer_clients')
           .insert([{
-            producer_id: producerId,
+            producer_id: selectedProducer.id,
             client_id: authData.user.id,
+            max_contracts: newClientData.maxContracts,
           }]);
 
         if (relationError) throw relationError;
@@ -118,7 +132,7 @@ const AdminDashboard = () => {
           description: "O cliente foi vinculado ao produtor com sucesso",
         });
 
-        setIsDialogOpen(false);
+        setIsAddClientDialogOpen(false);
         fetchProducers();
       }
     } catch (error) {
@@ -219,15 +233,20 @@ const AdminDashboard = () => {
         clients={clients}
         selectedProducer={selectedProducer}
         isAddProducerDialogOpen={isAddProducerDialogOpen}
+        isAddClientDialogOpen={isAddClientDialogOpen}
         newProducerData={newProducerData}
+        newClientData={newClientData}
         onBack={() => {
           setCurrentView("overview");
           setSelectedProducer(null);
         }}
         onSelectProducer={handleSelectProducer}
         onAddProducer={handleAddProducer}
+        onAddClient={handleAddClient}
         onAddProducerDialogOpenChange={setIsAddProducerDialogOpen}
+        onAddClientDialogOpenChange={setIsAddClientDialogOpen}
         onNewProducerDataChange={setNewProducerData}
+        onNewClientDataChange={setNewClientData}
       />
     );
   }
@@ -246,3 +265,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

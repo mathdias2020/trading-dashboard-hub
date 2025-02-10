@@ -44,6 +44,7 @@ export type Database = {
           id: string
           investment_preferences: Json | null
           risk_profile: string | null
+          terms_accepted_at: string | null
           updated_at: string
         }
         Insert: {
@@ -51,6 +52,7 @@ export type Database = {
           id: string
           investment_preferences?: Json | null
           risk_profile?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -58,6 +60,7 @@ export type Database = {
           id?: string
           investment_preferences?: Json | null
           risk_profile?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -84,6 +87,7 @@ export type Database = {
           balance: number
           created_at: string
           id: string
+          mt5_password: string
           updated_at: string
           user_id: string
         }
@@ -93,6 +97,7 @@ export type Database = {
           balance?: number
           created_at?: string
           id?: string
+          mt5_password: string
           updated_at?: string
           user_id: string
         }
@@ -102,6 +107,7 @@ export type Database = {
           balance?: number
           created_at?: string
           id?: string
+          mt5_password?: string
           updated_at?: string
           user_id?: string
         }
