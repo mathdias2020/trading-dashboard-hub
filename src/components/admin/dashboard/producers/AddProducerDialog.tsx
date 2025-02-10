@@ -33,8 +33,9 @@ export const AddProducerDialog = ({
     },
   });
 
-  const onSubmit = (data: ProducerFormValues) => {
-    onAddProducer(data);
+  const onSubmit = async (data: ProducerFormValues) => {
+    console.log("Form submitted with data:", data); // Debug log
+    await onAddProducer(data);
     form.reset();
   };
 
@@ -56,7 +57,7 @@ export const AddProducerDialog = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input type="email" placeholder="email@exemplo.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -69,7 +70,7 @@ export const AddProducerDialog = ({
                 <FormItem>
                   <FormLabel>Senha Inicial</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" placeholder="Mínimo 6 caracteres" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

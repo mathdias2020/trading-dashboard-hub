@@ -19,7 +19,7 @@ interface ProducersManagementProps {
   newClientData: NewClientData;
   onBack: () => void;
   onSelectProducer: (producer: Producer) => void;
-  onAddProducer: () => void;
+  onAddProducer: (data: { email: string; password: string }) => void;
   onEditProducer: (producer: Producer, data: any) => void;
   onAddClient: () => void;
   onAddProducerDialogOpenChange: (open: boolean) => void;
@@ -46,6 +46,11 @@ export const ProducersManagement = ({
   onNewProducerDataChange,
   onNewClientDataChange,
 }: ProducersManagementProps) => {
+  const handleAddProducer = async (data: { email: string; password: string }) => {
+    console.log("Handling producer addition with data:", data); // Debug log
+    onAddProducer(data);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -58,7 +63,7 @@ export const ProducersManagement = ({
           <AddProducerDialog
             isOpen={isAddProducerDialogOpen}
             onOpenChange={onAddProducerDialogOpenChange}
-            onAddProducer={onAddProducer}
+            onAddProducer={handleAddProducer}
           />
         </div>
       </div>

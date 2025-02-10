@@ -70,32 +70,13 @@ export const useProducerManagement = () => {
     }
   };
 
-  const handleAddProducer = async () => {
+  const handleAddProducer = async (data: { email: string; password: string }) => {
+    console.log("Starting producer creation with data:", data); // Debug log
     try {
-      // Validate required fields
-      if (!newProducerData.email || !newProducerData.password) {
-        toast({
-          variant: "destructive",
-          title: "Erro",
-          description: "Email e senha são obrigatórios",
-        });
-        return;
-      }
-
-      // Validate email format
-      if (!newProducerData.email.includes('@')) {
-        toast({
-          variant: "destructive",
-          title: "Erro",
-          description: "Por favor insira um email válido",
-        });
-        return;
-      }
-
       // Create user with admin client to skip email verification
       const { data: userData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
-        email: newProducerData.email.trim(),
-        password: newProducerData.password,
+        email: data.email.trim(),
+        password: data.password,
         email_confirm: true,
         user_metadata: {
           role: 'producer',
