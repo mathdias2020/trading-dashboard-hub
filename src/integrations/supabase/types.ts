@@ -70,6 +70,89 @@ export type Database = {
           },
         ]
       }
+      mt5_accounts: {
+        Row: {
+          account_number: string
+          algo_trading: boolean | null
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_number: string
+          algo_trading?: boolean | null
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_number?: string
+          algo_trading?: boolean | null
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mt5_accounts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producer_clients: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          max_contracts: number | null
+          producer_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          max_contracts?: number | null
+          producer_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          max_contracts?: number | null
+          producer_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producer_clients_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "producer_clients_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       producers: {
         Row: {
           business_info: Json | null
@@ -134,6 +217,57 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      trading_results: {
+        Row: {
+          balance: number
+          client_id: string | null
+          contracts: number
+          created_at: string
+          date: string
+          id: string
+          producer_id: string | null
+          result: number
+          updated_at: string
+        }
+        Insert: {
+          balance?: number
+          client_id?: string | null
+          contracts?: number
+          created_at?: string
+          date: string
+          id?: string
+          producer_id?: string | null
+          result?: number
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          client_id?: string | null
+          contracts?: number
+          created_at?: string
+          date?: string
+          id?: string
+          producer_id?: string | null
+          result?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trading_results_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trading_results_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
