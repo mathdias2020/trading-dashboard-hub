@@ -4,8 +4,8 @@ import { OverviewCards } from "@/components/admin/dashboard/OverviewCards";
 import { ProducersList } from "@/components/admin/dashboard/ProducersList";
 import { ProducersManagement } from "@/components/admin/dashboard/ProducersManagement";
 import { NotificationsView } from "@/components/admin/dashboard/NotificationsView";
-import { Notification } from "@/types/admin";
 import { useAdminDashboard } from "@/hooks/admin/useAdminDashboard";
+import { useNotifications } from "@/hooks/admin/useNotifications";
 
 const AdminDashboard = () => {
   const {
@@ -29,16 +29,7 @@ const AdminDashboard = () => {
     handleSelectProducer,
   } = useAdminDashboard();
 
-  // Mock notifications data (this could be moved to another hook if needed)
-  const notifications: Notification[] = [
-    { id: 1, type: "producer", message: "Novo produtor aguardando aprovação", date: "2024-03-20", status: "pending" },
-    { id: 2, type: "client", message: "Cliente solicitou alteração de dados bancários", date: "2024-03-19", status: "pending" },
-  ];
-
-  const handleResolveNotification = (id: number) => {
-    // This could be moved to a notifications hook when implementing real notification handling
-    console.log("Resolving notification:", id);
-  };
+  const { notifications, handleResolveNotification } = useNotifications();
 
   if (currentView === "overview") {
     return (
@@ -112,3 +103,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
