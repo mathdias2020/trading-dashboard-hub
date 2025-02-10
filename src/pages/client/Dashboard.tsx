@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
+import { addDays, isWithinInterval, parseISO } from "date-fns";
 
 const ClientDashboard = () => {
   const { toast } = useToast();
@@ -76,6 +76,18 @@ const ClientDashboard = () => {
     toast({
       title: "Configurações atualizadas",
       description: "Suas alterações foram salvas com sucesso"
+    });
+  };
+
+  const getFilteredCapitalData = () => {
+    if (!date?.from || !date?.to) return capitalCurveData;
+    
+    return capitalCurveData.filter((item) => {
+      const itemDate = parseISO(item.date);
+      return isWithinInterval(itemDate, { 
+        start: date.from, 
+        end: date.to 
+      });
     });
   };
 
@@ -150,7 +162,7 @@ const ClientDashboard = () => {
           </div>
 
           <div className="mt-8 mb-6">
-            <CapitalCurveChart data={capitalCurveData} />
+            <CapitalCurveChart data={getFilteredCapitalData()} />
           </div>
 
           <Card className="p-4">
