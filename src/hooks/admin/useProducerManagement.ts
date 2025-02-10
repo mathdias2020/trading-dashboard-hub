@@ -94,6 +94,40 @@ export const useProducerManagement = () => {
       }
 
       if (userData.user) {
+        // Update the profiles table
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ 
+            role: 'producer',
+            email: data.email.trim()
+          })
+          .eq('id', userData.user.id);
+
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+          toast({
+            variant: "destructive",
+            title: "Erro",
+            description: "Erro ao atualizar o perfil do produtor",
+          });
+          return;
+        }
+
+        // Insert into producers table
+        const { error: producerError } = await supabase
+          .from('producers')
+          .insert([{ id: userData.user.id }]);
+
+        if (producerError) {
+          console.error('Error creating producer record:', producerError);
+          toast({
+            variant: "destructive",
+            title: "Erro",
+            description: "Erro ao criar registro do produtor",
+          });
+          return;
+        }
+
         toast({
           title: "Produtor adicionado",
           description: "O produtor foi adicionado com sucesso.",
@@ -101,7 +135,7 @@ export const useProducerManagement = () => {
 
         setIsAddProducerDialogOpen(false);
         setNewProducerData({ email: "", password: "" }); // Reset form
-        fetchProducers();
+        await fetchProducers(); // Refresh the producers list
       }
     } catch (error) {
       console.error('Error adding producer:', error);
