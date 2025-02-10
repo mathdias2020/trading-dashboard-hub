@@ -292,6 +292,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_client: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
+      is_producer: {
+        Args: {
+          user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       partnership_model: "nomos" | "independent"

@@ -10,9 +10,7 @@ export const useFetchProducers = () => {
 
   const fetchProducers = async () => {
     try {
-      const user = await supabase.auth.getUser();
-      
-      // Fetch all producers data
+      // Fetch all producers data with a single query
       const { data: producersData, error: producersError } = await supabase
         .from('profiles')
         .select(`
@@ -26,7 +24,8 @@ export const useFetchProducers = () => {
             business_info,
             partnership_model,
             monthly_fee_per_client
-          )
+          ),
+          producer_clients(count)
         `)
         .eq('role', 'producer');
 
@@ -42,31 +41,14 @@ export const useFetchProducers = () => {
         cpf: producer.cpf,
         role: producer.role,
         status: producer.producers?.document_verified ? "Ativo" : "Pendente",
-        clients: 0,
-        revenue: 0,
+        clients: producer.producer_clients?.[0]?.count || 0,
+        revenue: 0, // This could be calculated from trading_results if needed
         document_verified: producer.producers?.document_verified || false,
         partnership_model: producer.producers?.partnership_model || "nomos",
         monthly_fee_per_client: producer.producers?.monthly_fee_per_client || 100
       }));
 
       setProducers(formattedProducers);
-
-      // Fetch client count for each producer
-      for (const producer of formattedProducers) {
-        const { count, error: countError } = await supabase
-          .from('producer_clients')
-          .select('*', { count: 'exact' })
-          .eq('producer_id', producer.id);
-
-        if (countError) {
-          console.error('Error fetching client count:', countError);
-          continue;
-        }
-
-        producer.clients = count || 0;
-      }
-
-      setProducers([...formattedProducers]);
     } catch (error) {
       console.error('Error in fetchProducers:', error);
       toast({
