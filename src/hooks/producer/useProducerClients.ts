@@ -17,10 +17,16 @@ export const useProducerClients = () => {
           status,
           client_id,
           clients!inner (
-            id
-          ),
-          profiles:clients!inner(id, name),
-          mt5_accounts(account_number, balance, algo_trading)
+            id,
+            profiles!inner (
+              name
+            ),
+            mt5_accounts (
+              account_number,
+              balance,
+              algo_trading
+            )
+          )
         `)
         .eq('producer_id', (await supabase.auth.getUser()).data.user?.id);
 
@@ -28,13 +34,13 @@ export const useProducerClients = () => {
 
       return producerClients.map(pc => ({
         id: pc.id,
-        name: pc.profiles?.name || 'Sem nome',
-        account: pc.mt5_accounts?.[0]?.account_number || 'N/A',
+        name: pc.clients?.profiles?.name || 'Sem nome',
+        account: pc.clients?.mt5_accounts?.[0]?.account_number || 'N/A',
         monthlyResult: 0, // Será implementado com trading_results
         status: pc.status || 'Inativo',
         maxContracts: pc.max_contracts || 1,
-        algoTrading: pc.mt5_accounts?.[0]?.algo_trading || false,
-        mt5Balance: pc.mt5_accounts?.[0]?.balance || 0,
+        algoTrading: pc.clients?.mt5_accounts?.[0]?.algo_trading || false,
+        mt5Balance: pc.clients?.mt5_accounts?.[0]?.balance || 0,
       }));
     }
   });
