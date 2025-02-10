@@ -27,6 +27,7 @@ const AdminDashboard = () => {
     handleAddClient,
     handleAddProducer,
     handleSelectProducer,
+    handleEditProducer,
   } = useAdminDashboard();
 
   const { notifications, handleResolveNotification } = useNotifications();
@@ -80,6 +81,7 @@ const AdminDashboard = () => {
         }}
         onSelectProducer={handleSelectProducer}
         onAddProducer={handleAddProducer}
+        onEditProducer={handleEditProducer}
         onAddClient={handleAddClient}
         onAddProducerDialogOpenChange={setIsAddProducerDialogOpen}
         onAddClientDialogOpenChange={setIsAddClientDialogOpen}
@@ -103,4 +105,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

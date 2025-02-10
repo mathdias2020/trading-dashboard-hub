@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Client, Producer } from "@/types/admin";
+import { Client, Producer, NewClientData } from "@/types/admin";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,15 +24,19 @@ interface ClientsListProps {
   selectedProducer: Producer;
   clients: Client[];
   isAddClientDialogOpen: boolean;
+  newClientData: NewClientData;
   onAddClientDialogOpenChange: (open: boolean) => void;
-  onAddClient: (data: ClientFormValues) => void;
+  onNewClientDataChange: (data: NewClientData) => void;
+  onAddClient: () => void;
 }
 
 export const ClientsList = ({
   selectedProducer,
   clients,
   isAddClientDialogOpen,
+  newClientData,
   onAddClientDialogOpenChange,
+  onNewClientDataChange,
   onAddClient,
 }: ClientsListProps) => {
   const form = useForm<ClientFormValues>({
