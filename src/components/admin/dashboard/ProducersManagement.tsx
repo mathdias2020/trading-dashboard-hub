@@ -20,6 +20,7 @@ interface ProducersManagementProps {
   onBack: () => void;
   onSelectProducer: (producer: Producer) => void;
   onAddProducer: () => void;
+  onEditProducer: (producer: Producer, data: any) => void;
   onAddClient: () => void;
   onAddProducerDialogOpenChange: (open: boolean) => void;
   onAddClientDialogOpenChange: (open: boolean) => void;
@@ -38,6 +39,7 @@ export const ProducersManagement = ({
   onBack,
   onSelectProducer,
   onAddProducer,
+  onEditProducer,
   onAddClient,
   onAddProducerDialogOpenChange,
   onAddClientDialogOpenChange,
@@ -56,8 +58,6 @@ export const ProducersManagement = ({
           <AddProducerDialog
             isOpen={isAddProducerDialogOpen}
             onOpenChange={onAddProducerDialogOpenChange}
-            producerData={newProducerData}
-            onProducerDataChange={onNewProducerDataChange}
             onAddProducer={onAddProducer}
           />
         </div>
@@ -68,6 +68,7 @@ export const ProducersManagement = ({
           producers={producers}
           selectedProducer={selectedProducer}
           onSelectProducer={onSelectProducer}
+          onEditProducer={onEditProducer}
         />
 
         {selectedProducer && (

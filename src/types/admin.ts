@@ -1,11 +1,14 @@
-
 export type Producer = {
   id: string;
   name: string;
+  email?: string;
+  cpf?: string;
   status: string;
   clients: number;
   revenue: number;
   document_verified: boolean;
+  partnership_model: "nomos" | "independent";
+  monthly_fee_per_client?: number;
 };
 
 export type Client = {
@@ -33,4 +36,3 @@ export type NewClientData = {
   mt5Password: string;
   maxContracts: number;
 };
-

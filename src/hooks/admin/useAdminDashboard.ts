@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +24,44 @@ export const useAdminDashboard = () => {
   });
   const { toast } = useToast();
 
+  const handleEditProducer = async (producer: Producer, data: any) => {
+    try {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          name: data.name,
+          email: data.email,
+          cpf: data.cpf,
+        })
+        .eq('id', producer.id);
+
+      if (profileError) throw profileError;
+
+      const { error: producerError } = await supabase
+        .from('producers')
+        .update({
+          partnership_model: data.partnership_model,
+        })
+        .eq('id', producer.id);
+
+      if (producerError) throw producerError;
+
+      toast({
+        title: "Produtor atualizado",
+        description: "As informações do produtor foram atualizadas com sucesso",
+      });
+
+      fetchProducers();
+    } catch (error) {
+      console.error('Error updating producer:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível atualizar o produtor",
+      });
+    }
+  };
+
   const fetchProducers = async () => {
     try {
       const { data: producersData, error: producersError } = await supabase
@@ -32,9 +69,13 @@ export const useAdminDashboard = () => {
         .select(`
           id,
           name,
+          email,
+          cpf,
           producers!inner (
             document_verified,
-            business_info
+            business_info,
+            partnership_model,
+            monthly_fee_per_client
           )
         `)
         .eq('role', 'producer');
@@ -44,10 +85,14 @@ export const useAdminDashboard = () => {
       const formattedProducers = producersData.map(producer => ({
         id: producer.id,
         name: producer.name || 'Sem nome',
+        email: producer.email,
+        cpf: producer.cpf,
         status: producer.producers?.document_verified ? "Ativo" : "Pendente",
         clients: 0,
         revenue: 0,
-        document_verified: producer.producers?.document_verified || false
+        document_verified: producer.producers?.document_verified || false,
+        partnership_model: producer.producers?.partnership_model || "nomos",
+        monthly_fee_per_client: producer.producers?.monthly_fee_per_client || 100
       }));
 
       setProducers(formattedProducers);
@@ -191,6 +236,6 @@ export const useAdminDashboard = () => {
     handleAddClient,
     handleAddProducer,
     handleSelectProducer,
+    handleEditProducer,
   };
 };
-

@@ -193,6 +193,10 @@ export type Database = {
           created_at: string
           document_verified: boolean | null
           id: string
+          monthly_fee_per_client: number | null
+          partnership_model:
+            | Database["public"]["Enums"]["partnership_model"]
+            | null
           updated_at: string
         }
         Insert: {
@@ -200,6 +204,10 @@ export type Database = {
           created_at?: string
           document_verified?: boolean | null
           id: string
+          monthly_fee_per_client?: number | null
+          partnership_model?:
+            | Database["public"]["Enums"]["partnership_model"]
+            | null
           updated_at?: string
         }
         Update: {
@@ -207,6 +215,10 @@ export type Database = {
           created_at?: string
           document_verified?: boolean | null
           id?: string
+          monthly_fee_per_client?: number | null
+          partnership_model?:
+            | Database["public"]["Enums"]["partnership_model"]
+            | null
           updated_at?: string
         }
         Relationships: [
@@ -311,7 +323,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      partnership_model: "nomos" | "independent"
     }
     CompositeTypes: {
       [_ in never]: never
