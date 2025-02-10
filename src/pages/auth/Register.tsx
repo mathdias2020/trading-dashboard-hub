@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Register = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [role, setRole] = useState<"producer" | "client" | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -30,8 +31,20 @@ const Register = () => {
       return;
     }
 
-    // TODO: Implement registration logic
-    console.log("Form submitted:", { ...formData, role });
+    // Simulando registro bem-sucedido
+    toast({
+      title: "Registro realizado com sucesso!",
+      description: "Você será redirecionado para o dashboard.",
+    });
+
+    // Redirecionando baseado no papel
+    setTimeout(() => {
+      if (role === "producer") {
+        navigate("/producer/dashboard");
+      } else if (role === "client") {
+        navigate("/client/dashboard");
+      }
+    }, 2000);
   };
 
   if (!role) {
