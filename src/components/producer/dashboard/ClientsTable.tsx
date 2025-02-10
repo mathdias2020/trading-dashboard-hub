@@ -20,7 +20,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 
 interface Client {
-  id: number;
+  id: string;
   name: string;
   account: string;
   monthlyResult: number;

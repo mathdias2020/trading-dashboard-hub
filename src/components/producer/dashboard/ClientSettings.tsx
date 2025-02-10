@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 
 interface Client {
-  id: number;
+  id: string;
   name: string;
   account: string;
   status: string;
@@ -49,7 +49,7 @@ const ClientSettings = ({ clients, onStatusChange, onMaxContractsChange }: Clien
                   <Button
                     variant={client.status === "Ativo" ? "default" : "secondary"}
                     size="sm"
-                    onClick={() => onStatusChange(client.id)}
+                    onClick={() => onStatusChange(Number(client.id))}
                   >
                     {client.status}
                   </Button>
@@ -58,7 +58,7 @@ const ClientSettings = ({ clients, onStatusChange, onMaxContractsChange }: Clien
                   <Input
                     type="number"
                     value={client.maxContracts}
-                    onChange={(e) => onMaxContractsChange(client.id, e.target.value)}
+                    onChange={(e) => onMaxContractsChange(Number(client.id), e.target.value)}
                     className="w-20"
                     min="1"
                   />
