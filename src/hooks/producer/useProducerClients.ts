@@ -16,7 +16,7 @@ export const useProducerClients = () => {
           max_contracts,
           status,
           client_id,
-          clients!inner (
+          clients!producer_clients_client_id_fkey (
             id,
             profiles (
               name
