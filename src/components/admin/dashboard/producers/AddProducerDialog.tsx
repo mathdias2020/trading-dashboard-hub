@@ -2,26 +2,42 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const producerFormSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+});
+
+type ProducerFormValues = z.infer<typeof producerFormSchema>;
 
 interface AddProducerDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  producerData: {
-    email: string;
-    password: string;
-  };
-  onProducerDataChange: (data: any) => void;
-  onAddProducer: () => void;
+  onAddProducer: (data: ProducerFormValues) => void;
 }
 
 export const AddProducerDialog = ({
   isOpen,
   onOpenChange,
-  producerData,
-  onProducerDataChange,
   onAddProducer,
 }: AddProducerDialogProps) => {
+  const form = useForm<ProducerFormValues>({
+    resolver: zodResolver(producerFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: ProducerFormValues) => {
+    onAddProducer(data);
+    form.reset();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -31,32 +47,39 @@ export const AddProducerDialog = ({
         <DialogHeader>
           <DialogTitle>Adicionar Novo Produtor</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="producer-email">Email</Label>
-            <Input
-              id="producer-email"
-              type="email"
-              value={producerData.email}
-              onChange={(e) => onProducerDataChange({ ...producerData, email: e.target.value })}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="producer-password">Senha Inicial</Label>
-            <Input
-              id="producer-password"
-              type="password"
-              value={producerData.password}
-              onChange={(e) => onProducerDataChange({ ...producerData, password: e.target.value })}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha Inicial</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <Button 
-            className="w-full" 
-            onClick={onAddProducer}
-          >
-            Adicionar Produtor
-          </Button>
-        </div>
+            <Button type="submit" className="w-full">
+              Adicionar Produtor
+            </Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
