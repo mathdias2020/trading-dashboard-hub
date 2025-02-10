@@ -19,17 +19,15 @@ export const useClientManagement = () => {
 
   const handleAddClient = async (producerId: string) => {
     try {
-      // Create new user with email signup
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Create new user with admin API
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: newClientData.email,
         password: newClientData.password,
-        options: {
-          data: {
-            name: newClientData.name,
-            role: 'client',
-          },
-          emailRedirectTo: `${window.location.origin}/client/dashboard`
-        }
+        email_confirm: true,
+        user_metadata: {
+          name: newClientData.name,
+          role: 'client',
+        },
       });
 
       if (authError) throw authError;
