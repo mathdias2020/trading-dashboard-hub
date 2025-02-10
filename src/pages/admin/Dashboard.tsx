@@ -42,12 +42,17 @@ const AdminDashboard = () => {
   const [producers, setProducers] = useState<Producer[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddProducerDialogOpen, setIsAddProducerDialogOpen] = useState(false);
   const [newClientData, setNewClientData] = useState({
     name: "",
     email: "",
     password: "",
     cpf: "",
     phone: "",
+  });
+  const [newProducerData, setNewProducerData] = useState({
+    email: "",
+    password: "",
   });
   const { toast } = useToast();
 
@@ -63,28 +68,26 @@ const AdminDashboard = () => {
   const fetchProducers = async () => {
     try {
       const { data: producersData, error: producersError } = await supabase
-        .from('producers')
+        .from('profiles')
         .select(`
           id,
-          profiles!producers_id_fkey (
-            name,
-            email,
-            cpf,
-            phone
-          ),
-          document_verified,
-          business_info
-        `);
+          name,
+          producers!inner (
+            document_verified,
+            business_info
+          )
+        `)
+        .eq('role', 'producer');
 
       if (producersError) throw producersError;
 
       const formattedProducers = producersData.map(producer => ({
         id: producer.id,
-        name: producer.profiles?.name || 'Sem nome',
-        status: producer.document_verified ? "Ativo" : "Pendente",
-        clients: 0, // We'll update this with actual count
-        revenue: 0, // We'll update this with actual revenue
-        document_verified: producer.document_verified
+        name: producer.name || 'Sem nome',
+        status: producer.producers?.document_verified ? "Ativo" : "Pendente",
+        clients: 0,
+        revenue: 0,
+        document_verified: producer.producers?.document_verified || false
       }));
 
       setProducers(formattedProducers);
@@ -153,6 +156,40 @@ const AdminDashboard = () => {
         variant: "destructive",
         title: "Erro",
         description: "Não foi possível adicionar o cliente",
+      });
+    }
+  };
+
+  const handleAddProducer = async () => {
+    try {
+      // 1. Create auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: newProducerData.email,
+        password: newProducerData.password,
+        options: {
+          data: {
+            role: 'producer',
+          }
+        }
+      });
+
+      if (authError) throw authError;
+
+      if (authData.user) {
+        toast({
+          title: "Produtor adicionado",
+          description: "O produtor foi adicionado com sucesso. Ele poderá completar seu cadastro no primeiro acesso.",
+        });
+
+        setIsAddProducerDialogOpen(false);
+        fetchProducers();
+      }
+    } catch (error) {
+      console.error('Error adding producer:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível adicionar o produtor",
       });
     }
   };
@@ -322,6 +359,44 @@ const AdminDashboard = () => {
             Voltar
           </Button>
           <h1 className="text-2xl font-bold">Produtores</h1>
+          <div className="ml-auto">
+            <Dialog open={isAddProducerDialogOpen} onOpenChange={setIsAddProducerDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>Adicionar Produtor</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Adicionar Novo Produtor</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="producer-email">Email</Label>
+                    <Input
+                      id="producer-email"
+                      type="email"
+                      value={newProducerData.email}
+                      onChange={(e) => setNewProducerData({ ...newProducerData, email: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="producer-password">Senha Inicial</Label>
+                    <Input
+                      id="producer-password"
+                      type="password"
+                      value={newProducerData.password}
+                      onChange={(e) => setNewProducerData({ ...newProducerData, password: e.target.value })}
+                    />
+                  </div>
+                  <Button 
+                    className="w-full" 
+                    onClick={handleAddProducer}
+                  >
+                    Adicionar Produtor
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
