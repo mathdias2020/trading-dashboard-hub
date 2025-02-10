@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import {
   Table,
   TableBody,
@@ -22,9 +25,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const ProducerSettings = () => {
   const { toast } = useToast();
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [clients, setClients] = useState([
     { 
       id: 1, 
@@ -32,7 +41,10 @@ const ProducerSettings = () => {
       status: "Ativo", 
       subscriptionDate: "2024-01-15",
       contracts: 2,
-      maxContracts: 5
+      maxContracts: 5,
+      algoTrading: true,
+      mt5Balance: 15000,
+      result: 2500
     },
     { 
       id: 2, 
@@ -40,7 +52,10 @@ const ProducerSettings = () => {
       status: "Ativo", 
       subscriptionDate: "2024-02-01",
       contracts: 1,
-      maxContracts: 3
+      maxContracts: 3,
+      algoTrading: false,
+      mt5Balance: 8000,
+      result: -500
     },
     { 
       id: 3, 
@@ -48,7 +63,10 @@ const ProducerSettings = () => {
       status: "Inativo", 
       subscriptionDate: "2024-01-10",
       contracts: 0,
-      maxContracts: 2
+      maxContracts: 2,
+      algoTrading: true,
+      mt5Balance: 5000,
+      result: 1200
     },
   ]);
 
@@ -79,6 +97,20 @@ const ProducerSettings = () => {
     }));
   };
 
+  const toggleAlgoTrading = (clientId: number) => {
+    setClients(clients.map(client => {
+      if (client.id === clientId) {
+        const newAlgoTrading = !client.algoTrading;
+        toast({
+          title: "AlgoTrading alterado",
+          description: `AlgoTrading do cliente ${client.name} ${newAlgoTrading ? 'ativado' : 'desativado'}`,
+        });
+        return { ...client, algoTrading: newAlgoTrading };
+      }
+      return client;
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -90,6 +122,21 @@ const ProducerSettings = () => {
           </Link>
           <h1 className="text-2xl font-bold">Configurações</h1>
         </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">
+              {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              locale={ptBR}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       <Card className="p-4">
@@ -103,6 +150,9 @@ const ProducerSettings = () => {
                 <TableHead>Data de Assinatura</TableHead>
                 <TableHead>Contratos</TableHead>
                 <TableHead>Limite de Contratos</TableHead>
+                <TableHead>AlgoTrading</TableHead>
+                <TableHead>Saldo MT5</TableHead>
+                <TableHead>Resultado</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -120,6 +170,18 @@ const ProducerSettings = () => {
                   <TableCell>{new Date(client.subscriptionDate).toLocaleDateString()}</TableCell>
                   <TableCell>{client.contracts}</TableCell>
                   <TableCell>{client.maxContracts}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={client.algoTrading}
+                      onCheckedChange={() => toggleAlgoTrading(client.id)}
+                    />
+                  </TableCell>
+                  <TableCell>R$ {client.mt5Balance.toLocaleString()}</TableCell>
+                  <TableCell>
+                    <span className={client.result >= 0 ? "text-green-600" : "text-red-600"}>
+                      R$ {client.result.toLocaleString()}
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <Switch

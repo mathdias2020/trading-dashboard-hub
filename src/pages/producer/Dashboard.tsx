@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import {
   Table,
@@ -11,12 +13,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
   const [currentView, setCurrentView] = useState<"dashboard" | "settings">("dashboard");
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const { toast } = useToast();
 
   const producerData = {
@@ -35,7 +44,9 @@ const ProducerDashboard = () => {
       account: "MT5-001",
       monthlyResult: 2500,
       status: "Ativo",
-      maxContracts: 1
+      maxContracts: 1,
+      algoTrading: true,
+      mt5Balance: 15000,
     },
     { 
       id: 2, 
@@ -43,7 +54,9 @@ const ProducerDashboard = () => {
       account: "MT5-002",
       monthlyResult: 1800,
       status: "Ativo",
-      maxContracts: 2
+      maxContracts: 2,
+      algoTrading: false,
+      mt5Balance: 8000,
     },
     { 
       id: 3, 
@@ -51,7 +64,9 @@ const ProducerDashboard = () => {
       account: "MT5-003",
       monthlyResult: -500,
       status: "Inativo",
-      maxContracts: 1
+      maxContracts: 1,
+      algoTrading: true,
+      mt5Balance: 5000,
     },
   ];
 
@@ -142,7 +157,24 @@ const ProducerDashboard = () => {
       />
 
       <Card className="p-4">
-        <h2 className="text-xl font-semibold mb-4">Clientes</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Clientes</h2>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                locale={ptBR}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -151,6 +183,8 @@ const ProducerDashboard = () => {
                 <TableHead>Conta</TableHead>
                 <TableHead>Resultado Mensal</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>AlgoTrading</TableHead>
+                <TableHead>Saldo MT5</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -168,6 +202,14 @@ const ProducerDashboard = () => {
                       {client.status}
                     </span>
                   </TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      client.algoTrading ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                    }`}>
+                      {client.algoTrading ? "Ativo" : "Inativo"}
+                    </span>
+                  </TableCell>
+                  <TableCell>R$ {client.mt5Balance.toLocaleString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

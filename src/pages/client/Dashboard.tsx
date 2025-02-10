@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +12,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 const ClientDashboard = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [formData, setFormData] = useState({
     account: "123",
     password: "1234",
@@ -29,7 +38,9 @@ const ClientDashboard = () => {
     producer: "João Silva",
     lastOperation: "2024-02-09",
     monthlyReturn: 1200,
-    producerContractLimit: 10
+    producerContractLimit: 10,
+    algoTrading: true,
+    mt5Balance: 15000,
   };
 
   const operations = [
@@ -58,7 +69,6 @@ const ClientDashboard = () => {
       });
       return;
     }
-    // Here you would typically make an API call to update the settings
     toast({
       title: "Configurações atualizadas",
       description: "Suas alterações foram salvas com sucesso"
@@ -69,7 +79,24 @@ const ClientDashboard = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Minha Conta</h1>
-        <div className="text-sm text-muted-foreground">Bem-vindo(a), {clientData.name}</div>
+        <div className="flex items-center space-x-4">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                locale={ptBR}
+              />
+            </PopoverContent>
+          </Popover>
+          <div className="text-sm text-muted-foreground">Bem-vindo(a), {clientData.name}</div>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
@@ -89,14 +116,16 @@ const ClientDashboard = () => {
               <p className="text-2xl">R$ {clientData.monthlyReturn.toLocaleString()}</p>
             </Card>
             <Card className="p-4">
-              <h3 className="font-semibold">Produtor</h3>
-              <p className="text-lg">{clientData.producer}</p>
+              <h3 className="font-semibold">Saldo MT5</h3>
+              <p className="text-2xl">R$ {clientData.mt5Balance.toLocaleString()}</p>
             </Card>
             <Card className="p-4">
               <h3 className="font-semibold">Status</h3>
               <p className="mt-2">
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
-                  {clientData.status}
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  clientData.algoTrading ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                }`}>
+                  AlgoTrading {clientData.algoTrading ? "Ativo" : "Inativo"}
                 </span>
               </p>
             </Card>
