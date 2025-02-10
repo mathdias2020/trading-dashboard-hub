@@ -30,7 +30,10 @@ export const useClientManagement = () => {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error('Auth error:', authError);
+        throw authError;
+      }
 
       if (authData.user) {
         // Create MT5 account entry
@@ -42,7 +45,10 @@ export const useClientManagement = () => {
             mt5_password: newClientData.mt5Password,
           }]);
 
-        if (mt5Error) throw mt5Error;
+        if (mt5Error) {
+          console.error('MT5 error:', mt5Error);
+          throw mt5Error;
+        }
 
         // Create producer-client relationship
         const { error: relationError } = await supabaseAdmin
@@ -53,7 +59,10 @@ export const useClientManagement = () => {
             max_contracts: newClientData.maxContracts,
           }]);
 
-        if (relationError) throw relationError;
+        if (relationError) {
+          console.error('Relation error:', relationError);
+          throw relationError;
+        }
 
         toast({
           title: "Cliente adicionado",
