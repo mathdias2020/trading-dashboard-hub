@@ -1,9 +1,11 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -80,7 +82,14 @@ const ProducerSettings = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Configurações</h1>
+        <div className="flex items-center gap-4">
+          <Link to="/producer/dashboard">
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold">Configurações</h1>
+        </div>
       </div>
 
       <Card className="p-4">
