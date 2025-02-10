@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/integrations/supabase/adminClient";
 import { Producer } from "@/types/admin";
 
 export const useProducerManagement = () => {
@@ -71,22 +72,22 @@ export const useProducerManagement = () => {
 
   const handleAddProducer = async () => {
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Create user with admin client to skip email verification
+      const { data: userData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
         email: newProducerData.email,
         password: newProducerData.password,
-        options: {
-          data: {
-            role: 'producer',
-          }
+        email_confirm: true,
+        user_metadata: {
+          role: 'producer',
         }
       });
 
-      if (authError) throw authError;
+      if (createUserError) throw createUserError;
 
-      if (authData.user) {
+      if (userData.user) {
         toast({
           title: "Produtor adicionado",
-          description: "O produtor foi adicionado com sucesso. Ele poderá completar seu cadastro no primeiro acesso.",
+          description: "O produtor foi adicionado com sucesso.",
         });
 
         setIsAddProducerDialogOpen(false);
