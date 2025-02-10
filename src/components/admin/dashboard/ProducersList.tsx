@@ -14,11 +14,12 @@ interface ProducersListProps {
     name: string;
     email: string;
     password: string;
-    cpf: string;
-    phone: string;
+    mt5Account: string;
+    mt5Password: string;
+    maxContracts: number;
   };
   onSelectProducer: (producer: Producer) => void;
-  onAddClient: (producerId: string) => void;
+  onAddClient: () => void;
   onNewClientDataChange: (data: any) => void;
   onDialogOpenChange: (open: boolean) => void;
 }
@@ -96,7 +97,7 @@ export const ProducersList = ({
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="password">Senha</Label>
+                          <Label htmlFor="password">Senha Inicial</Label>
                           <Input
                             id="password"
                             type="password"
@@ -105,24 +106,35 @@ export const ProducersList = ({
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="cpf">CPF</Label>
+                          <Label htmlFor="mt5Account">Conta MT5</Label>
                           <Input
-                            id="cpf"
-                            value={newClientData.cpf}
-                            onChange={(e) => onNewClientDataChange({ ...newClientData, cpf: e.target.value })}
+                            id="mt5Account"
+                            value={newClientData.mt5Account}
+                            onChange={(e) => onNewClientDataChange({ ...newClientData, mt5Account: e.target.value })}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Telefone</Label>
+                          <Label htmlFor="mt5Password">Senha MT5</Label>
                           <Input
-                            id="phone"
-                            value={newClientData.phone}
-                            onChange={(e) => onNewClientDataChange({ ...newClientData, phone: e.target.value })}
+                            id="mt5Password"
+                            type="password"
+                            value={newClientData.mt5Password}
+                            onChange={(e) => onNewClientDataChange({ ...newClientData, mt5Password: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="maxContracts">Contratos</Label>
+                          <Input
+                            id="maxContracts"
+                            type="number"
+                            min="1"
+                            value={newClientData.maxContracts}
+                            onChange={(e) => onNewClientDataChange({ ...newClientData, maxContracts: parseInt(e.target.value) })}
                           />
                         </div>
                         <Button 
                           className="w-full" 
-                          onClick={() => onAddClient(producer.id)}
+                          onClick={onAddClient}
                         >
                           Adicionar Cliente
                         </Button>

@@ -33,4 +33,3 @@ export type NewClientData = {
   mt5Password: string;
   maxContracts: number;
 };
-
