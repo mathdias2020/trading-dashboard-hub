@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState<"producer" | "client" | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -19,7 +21,7 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -31,20 +33,63 @@ const Register = () => {
       return;
     }
 
-    // Simulando registro bem-sucedido
-    toast({
-      title: "Registro realizado com sucesso!",
-      description: "Você será redirecionado para o dashboard.",
-    });
+    if (!role) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Selecione um perfil",
+      });
+      return;
+    }
 
-    // Redirecionando baseado no papel
-    setTimeout(() => {
-      if (role === "producer") {
-        navigate("/producer/dashboard");
-      } else if (role === "client") {
-        navigate("/client/dashboard");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name,
+            role: role,
+          },
+        },
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao criar conta",
+          description: error.message,
+        });
+        return;
       }
-    }, 2000);
+
+      if (data.user) {
+        toast({
+          title: "Conta criada com sucesso!",
+          description: "Você será redirecionado para o dashboard.",
+        });
+
+        // Redirect based on role
+        setTimeout(() => {
+          if (role === "producer") {
+            navigate("/producer/dashboard");
+          } else {
+            navigate("/client/dashboard");
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar conta",
+        description: "Ocorreu um erro inesperado",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!role) {
@@ -140,8 +185,8 @@ const Register = () => {
             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
           />
         </div>
-        <Button type="submit" className="w-full">
-          Registrar
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Registrando..." : "Registrar"}
         </Button>
       </form>
       <div className="text-center">
