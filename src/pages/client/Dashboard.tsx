@@ -1,5 +1,6 @@
 
 import { Card } from "@/components/ui/card";
+import CapitalCurveChart from "@/components/CapitalCurveChart";
 
 const ClientDashboard = () => {
   const clientData = {
@@ -15,6 +16,16 @@ const ClientDashboard = () => {
     { id: 1, date: "2024-02-09", type: "Compra", symbol: "PETR4", result: 500 },
     { id: 2, date: "2024-02-08", type: "Venda", symbol: "VALE3", result: -200 },
     { id: 3, date: "2024-02-07", type: "Compra", symbol: "ITUB4", result: 900 },
+  ];
+
+  const capitalCurveData = [
+    { date: "2024-02-04", value: -50 },
+    { date: "2024-02-05", value: 100 },
+    { date: "2024-02-06", value: 150 },
+    { date: "2024-02-06", value: 120 },
+    { date: "2024-02-06", value: 280 },
+    { date: "2024-02-06", value: 320 },
+    { date: "2024-02-07", value: 400 },
   ];
 
   return (
@@ -46,6 +57,8 @@ const ClientDashboard = () => {
           </p>
         </Card>
       </div>
+
+      <CapitalCurveChart data={capitalCurveData} />
 
       <Card className="p-4">
         <h2 className="text-xl font-semibold mb-4">Últimas Operações</h2>

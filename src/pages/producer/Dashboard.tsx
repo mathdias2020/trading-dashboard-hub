@@ -1,5 +1,6 @@
 
 import { Card } from "@/components/ui/card";
+import CapitalCurveChart from "@/components/CapitalCurveChart";
 
 const ProducerDashboard = () => {
   const producerData = {
@@ -15,6 +16,16 @@ const ProducerDashboard = () => {
     { id: 1, name: "Ana Costa", status: "Ativo", subscriptionDate: "2024-01-15" },
     { id: 2, name: "Carlos Mendes", status: "Ativo", subscriptionDate: "2024-02-01" },
     { id: 3, name: "Beatriz Lima", status: "Inativo", subscriptionDate: "2024-01-10" },
+  ];
+
+  const capitalCurveData = [
+    { date: "2024-02-04", value: -70 },
+    { date: "2024-02-05", value: 150 },
+    { date: "2024-02-06", value: 200 },
+    { date: "2024-02-06", value: 180 },
+    { date: "2024-02-06", value: 350 },
+    { date: "2024-02-06", value: 400 },
+    { date: "2024-02-07", value: 500 },
   ];
 
   return (
@@ -46,6 +57,8 @@ const ProducerDashboard = () => {
           </p>
         </Card>
       </div>
+
+      <CapitalCurveChart data={capitalCurveData} />
 
       <Card className="p-4">
         <h2 className="text-xl font-semibold mb-4">Clientes Ativos</h2>
