@@ -33,7 +33,10 @@ export const useProducerManagement = () => {
         `)
         .eq('role', 'producer');
 
-      if (producersError) throw producersError;
+      if (producersError) {
+        console.error('Error fetching producers:', producersError);
+        throw producersError;
+      }
 
       const formattedProducers = producersData.map(producer => ({
         id: producer.id,
@@ -50,18 +53,24 @@ export const useProducerManagement = () => {
 
       setProducers(formattedProducers);
 
+      // Fetch client count for each producer
       for (const producer of formattedProducers) {
-        const { count } = await supabase
+        const { count, error: countError } = await supabase
           .from('producer_clients')
           .select('*', { count: 'exact' })
           .eq('producer_id', producer.id);
+
+        if (countError) {
+          console.error('Error fetching client count:', countError);
+          continue;
+        }
 
         producer.clients = count || 0;
       }
 
       setProducers([...formattedProducers]);
     } catch (error) {
-      console.error('Error fetching producers:', error);
+      console.error('Error in fetchProducers:', error);
       toast({
         variant: "destructive",
         title: "Erro",
@@ -71,7 +80,7 @@ export const useProducerManagement = () => {
   };
 
   const handleAddProducer = async (data: { email: string; password: string }) => {
-    console.log("Starting producer creation with data:", data); // Debug log
+    console.log("Starting producer creation with data:", data);
     try {
       // Create user with admin client to skip email verification
       const { data: userData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
@@ -134,11 +143,11 @@ export const useProducerManagement = () => {
         });
 
         setIsAddProducerDialogOpen(false);
-        setNewProducerData({ email: "", password: "" }); // Reset form
-        await fetchProducers(); // Refresh the producers list
+        setNewProducerData({ email: "", password: "" });
+        await fetchProducers();
       }
     } catch (error) {
-      console.error('Error adding producer:', error);
+      console.error('Error in handleAddProducer:', error);
       toast({
         variant: "destructive",
         title: "Erro",
@@ -158,7 +167,10 @@ export const useProducerManagement = () => {
         })
         .eq('id', producer.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Error updating profile:', profileError);
+        throw profileError;
+      }
 
       const { error: producerError } = await supabase
         .from('producers')
@@ -167,7 +179,10 @@ export const useProducerManagement = () => {
         })
         .eq('id', producer.id);
 
-      if (producerError) throw producerError;
+      if (producerError) {
+        console.error('Error updating producer:', producerError);
+        throw producerError;
+      }
 
       toast({
         title: "Produtor atualizado",
@@ -176,7 +191,7 @@ export const useProducerManagement = () => {
 
       fetchProducers();
     } catch (error) {
-      console.error('Error updating producer:', error);
+      console.error('Error in handleEditProducer:', error);
       toast({
         variant: "destructive",
         title: "Erro",
