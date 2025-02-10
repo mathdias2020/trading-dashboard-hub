@@ -25,11 +25,19 @@ const Login = () => {
       });
 
       if (error) {
-        toast({
-          variant: "destructive",
-          title: "Erro ao fazer login",
-          description: error.message,
-        });
+        if (error.message === "Invalid login credentials") {
+          toast({
+            variant: "destructive",
+            title: "Erro ao fazer login",
+            description: "Email ou senha incorretos. Por favor, verifique suas credenciais.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Erro ao fazer login",
+            description: error.message,
+          });
+        }
         return;
       }
 
