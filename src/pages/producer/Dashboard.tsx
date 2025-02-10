@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
@@ -12,9 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
+  const [currentView, setCurrentView] = useState<"dashboard" | "settings">("dashboard");
+  const { toast } = useToast();
 
   const producerData = {
     name: "João Silva",
@@ -31,21 +34,24 @@ const ProducerDashboard = () => {
       name: "Ana Costa",
       account: "MT5-001",
       monthlyResult: 2500,
-      status: "Ativo"
+      status: "Ativo",
+      maxContracts: 1
     },
     { 
       id: 2, 
       name: "Carlos Mendes",
       account: "MT5-002",
       monthlyResult: 1800,
-      status: "Ativo"
+      status: "Ativo",
+      maxContracts: 2
     },
     { 
       id: 3, 
       name: "Beatriz Lima",
       account: "MT5-003",
       monthlyResult: -500,
-      status: "Inativo"
+      status: "Inativo",
+      maxContracts: 1
     },
   ];
 
@@ -69,21 +75,22 @@ const ProducerDashboard = () => {
     { date: "2024-02-07", value: 600 },
   ];
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard do Produtor</h1>
-        <div className="flex items-center space-x-4">
-          <Link to="/producer/dashboard">
-            <Button variant="ghost">Dashboard</Button>
-          </Link>
-          <Link to="/producer/settings">
-            <Button variant="ghost">Configurações</Button>
-          </Link>
-          <div className="text-sm text-muted-foreground">Bem-vindo, {producerData.name}</div>
-        </div>
-      </div>
+  const handleStatusChange = (clientId: number) => {
+    toast({
+      title: "Status atualizado",
+      description: "O status do cliente foi atualizado com sucesso.",
+    });
+  };
 
+  const handleMaxContractsChange = (clientId: number, value: string) => {
+    toast({
+      title: "Limite atualizado",
+      description: "O limite de contratos foi atualizado com sucesso.",
+    });
+  };
+
+  const renderDashboardView = () => (
+    <>
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="p-4">
           <div className="flex flex-col space-y-2">
@@ -167,6 +174,81 @@ const ProducerDashboard = () => {
           </Table>
         </div>
       </Card>
+    </>
+  );
+
+  const renderSettingsView = () => (
+    <Card className="p-4">
+      <h2 className="text-xl font-semibold mb-4">Gerenciar Clientes</h2>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Conta</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Máximo de Contratos</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {clients.map((client) => (
+              <TableRow key={client.id}>
+                <TableCell>{client.name}</TableCell>
+                <TableCell>{client.account}</TableCell>
+                <TableCell>
+                  <Button
+                    variant={client.status === "Ativo" ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => handleStatusChange(client.id)}
+                  >
+                    {client.status}
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    value={client.maxContracts}
+                    onChange={(e) => handleMaxContractsChange(client.id, e.target.value)}
+                    className="w-20"
+                    min="1"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button variant="destructive" size="sm">
+                    Remover
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Dashboard do Produtor</h1>
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant={currentView === "dashboard" ? "default" : "ghost"}
+            onClick={() => setCurrentView("dashboard")}
+          >
+            Dashboard
+          </Button>
+          <Button 
+            variant={currentView === "settings" ? "default" : "ghost"}
+            onClick={() => setCurrentView("settings")}
+          >
+            Configurações
+          </Button>
+          <div className="text-sm text-muted-foreground">Bem-vindo, {producerData.name}</div>
+        </div>
+      </div>
+
+      {currentView === "dashboard" ? renderDashboardView() : renderSettingsView()}
     </div>
   );
 };

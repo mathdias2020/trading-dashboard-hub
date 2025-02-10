@@ -4,7 +4,6 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ProducerDashboard from "./pages/producer/Dashboard";
-import ProducerSettings from "./pages/producer/Settings";
 import ClientDashboard from "./pages/client/Dashboard";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
@@ -30,7 +29,6 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "dashboard", element: <ProducerDashboard /> },
-      { path: "settings", element: <ProducerSettings /> },
     ],
   },
   {
