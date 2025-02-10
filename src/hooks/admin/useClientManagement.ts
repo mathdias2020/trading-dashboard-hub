@@ -19,19 +19,23 @@ export const useClientManagement = () => {
 
   const handleAddClient = async (producerId: string) => {
     try {
+      // Create new user with email signup
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: newClientData.email,
         password: newClientData.password,
         options: {
           data: {
+            name: newClientData.name,
             role: 'client',
-          }
+          },
+          emailRedirectTo: `${window.location.origin}/client/dashboard`
         }
       });
 
       if (authError) throw authError;
 
       if (authData.user) {
+        // Create MT5 account entry
         const { error: mt5Error } = await supabase
           .from('mt5_accounts')
           .insert([{
@@ -42,6 +46,7 @@ export const useClientManagement = () => {
 
         if (mt5Error) throw mt5Error;
 
+        // Create producer-client relationship
         const { error: relationError } = await supabase
           .from('producer_clients')
           .insert([{
@@ -58,13 +63,23 @@ export const useClientManagement = () => {
         });
 
         setIsAddClientDialogOpen(false);
+        
+        // Reset form data
+        setNewClientData({
+          name: "",
+          email: "",
+          password: "",
+          mt5Account: "",
+          mt5Password: "",
+          maxContracts: 1
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding client:', error);
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Não foi possível adicionar o cliente",
+        description: error.message || "Não foi possível adicionar o cliente",
       });
     }
   };
