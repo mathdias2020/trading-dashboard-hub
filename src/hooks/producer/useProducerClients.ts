@@ -18,7 +18,7 @@ export const useProducerClients = () => {
           client_id,
           clients!producer_clients_client_id_fkey (
             id,
-            profiles (
+            profiles!fk_clients_profile (
               name
             ),
             mt5_accounts (
