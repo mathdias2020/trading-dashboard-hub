@@ -36,7 +36,15 @@ export const AddClientForm = ({ onSubmit }: AddClientFormProps) => {
   });
 
   const handleSubmit = (data: ClientFormValues) => {
-    onSubmit(data);
+    // Since ClientFormValues matches NewClientData structure exactly, we can safely pass it
+    onSubmit({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      mt5Account: data.mt5Account,
+      mt5Password: data.mt5Password,
+      maxContracts: data.maxContracts,
+    });
     form.reset();
   };
 
