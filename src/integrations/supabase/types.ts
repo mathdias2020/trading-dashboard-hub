@@ -9,6 +9,99 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admins: {
+        Row: {
+          created_at: string
+          id: string
+          permissions: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          permissions?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permissions?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admins_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          created_at: string
+          id: string
+          investment_preferences: Json | null
+          risk_profile: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          investment_preferences?: Json | null
+          risk_profile?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investment_preferences?: Json | null
+          risk_profile?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producers: {
+        Row: {
+          business_info: Json | null
+          created_at: string
+          document_verified: boolean | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          business_info?: Json | null
+          created_at?: string
+          document_verified?: boolean | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          business_info?: Json | null
+          created_at?: string
+          document_verified?: boolean | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "producers_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           cpf: string | null
