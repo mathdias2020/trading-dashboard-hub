@@ -21,8 +21,8 @@ interface Client {
 
 interface ClientSettingsProps {
   clients: Client[];
-  onStatusChange: (clientId: number) => void;
-  onMaxContractsChange: (clientId: number, value: string) => void;
+  onStatusChange: (clientId: string) => void;
+  onMaxContractsChange: (clientId: string, value: string) => void;
 }
 
 const ClientSettings = ({ clients, onStatusChange, onMaxContractsChange }: ClientSettingsProps) => {
@@ -49,7 +49,7 @@ const ClientSettings = ({ clients, onStatusChange, onMaxContractsChange }: Clien
                   <Button
                     variant={client.status === "Ativo" ? "default" : "secondary"}
                     size="sm"
-                    onClick={() => onStatusChange(Number(client.id))}
+                    onClick={() => onStatusChange(client.id)}
                   >
                     {client.status}
                   </Button>
@@ -58,7 +58,7 @@ const ClientSettings = ({ clients, onStatusChange, onMaxContractsChange }: Clien
                   <Input
                     type="number"
                     value={client.maxContracts}
-                    onChange={(e) => onMaxContractsChange(Number(client.id), e.target.value)}
+                    onChange={(e) => onMaxContractsChange(client.id, e.target.value)}
                     className="w-20"
                     min="1"
                   />

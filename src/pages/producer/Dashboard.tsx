@@ -61,10 +61,10 @@ const ProducerDashboard = () => {
           max_contracts,
           status,
           client_id,
-          clients (
+          clients!inner (
             id
           ),
-          profiles!clients(id, name),
+          profiles:clients!inner(id, name),
           mt5_accounts(account_number, balance, algo_trading)
         `)
         .eq('producer_id', (await supabase.auth.getUser()).data.user?.id);
@@ -102,12 +102,15 @@ const ProducerDashboard = () => {
     enabled: !!date?.from && !!date?.to
   });
 
-  const handleStatusChange = async (clientId: number) => {
+  const handleStatusChange = async (clientId: string) => {
     try {
+      const currentClient = clients?.find(c => c.id === clientId);
+      const newStatus = currentClient?.status === 'Ativo' ? 'Inativo' : 'Ativo';
+
       const { error } = await supabase
         .from('producer_clients')
         .update({
-          status: clients?.find(c => c.id === clientId)?.status === 'Ativo' ? 'Inativo' : 'Ativo'
+          status: newStatus
         })
         .eq('id', clientId);
 
@@ -129,7 +132,7 @@ const ProducerDashboard = () => {
     }
   };
 
-  const handleMaxContractsChange = async (clientId: number, value: string) => {
+  const handleMaxContractsChange = async (clientId: string, value: string) => {
     try {
       const { error } = await supabase
         .from('producer_clients')
