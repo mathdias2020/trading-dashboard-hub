@@ -144,6 +144,20 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_producer_clients_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_producer_clients_producer"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "producer_clients_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false

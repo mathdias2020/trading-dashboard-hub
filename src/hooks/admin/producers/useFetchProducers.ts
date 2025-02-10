@@ -10,7 +10,6 @@ export const useFetchProducers = () => {
 
   const fetchProducers = async () => {
     try {
-      // Fetch all producers data with a single query
       const { data: producersData, error: producersError } = await supabase
         .from('profiles')
         .select(`
@@ -19,13 +18,15 @@ export const useFetchProducers = () => {
           email,
           cpf,
           role,
-          producers!inner (
+          producers (
             document_verified,
             business_info,
             partnership_model,
             monthly_fee_per_client
           ),
-          producer_clients(count)
+          producer_clients!producer_id (
+            count
+          )
         `)
         .eq('role', 'producer');
 
