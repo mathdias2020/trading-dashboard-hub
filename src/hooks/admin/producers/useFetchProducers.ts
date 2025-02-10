@@ -10,27 +10,9 @@ export const useFetchProducers = () => {
 
   const fetchProducers = async () => {
     try {
-      // First check if user is admin
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
-
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        throw profileError;
-      }
-
-      if (profileData.role !== 'admin') {
-        toast({
-          variant: "destructive",
-          title: "Acesso negado",
-          description: "Você não tem permissão para acessar estes dados.",
-        });
-        return;
-      }
-
+      const user = await supabase.auth.getUser();
+      
+      // Fetch all producers data
       const { data: producersData, error: producersError } = await supabase
         .from('profiles')
         .select(`
