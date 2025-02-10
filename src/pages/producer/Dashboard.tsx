@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import {
@@ -21,11 +21,15 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { DateRange } from "react-day-picker";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
   const [currentView, setCurrentView] = useState<"dashboard" | "settings">("dashboard");
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 7)
+  });
   const { toast } = useToast();
 
   const producerData = {
@@ -152,9 +156,11 @@ const ProducerDashboard = () => {
         </Card>
       </div>
 
-      <CapitalCurveChart 
-        data={balanceView === "personal" ? personalCapitalCurveData : subscribersCapitalCurveData} 
-      />
+      <div className="mt-8 mb-6">
+        <CapitalCurveChart 
+          data={balanceView === "personal" ? personalCapitalCurveData : subscribersCapitalCurveData} 
+        />
+      </div>
 
       <Card className="p-4">
         <div className="flex justify-between items-center mb-4">
@@ -162,14 +168,28 @@ const ProducerDashboard = () => {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline">
-                {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "dd/MM/yyyy", { locale: ptBR })} -{" "}
+                      {format(date.to, "dd/MM/yyyy", { locale: ptBR })}
+                    </>
+                  ) : (
+                    format(date.from, "dd/MM/yyyy", { locale: ptBR })
+                  )
+                ) : (
+                  "Selecione um período"
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
               <Calendar
-                mode="single"
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
                 selected={date}
                 onSelect={setDate}
+                numberOfMonths={2}
                 locale={ptBR}
               />
             </PopoverContent>

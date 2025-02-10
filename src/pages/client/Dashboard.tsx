@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -150,7 +149,9 @@ const ClientDashboard = () => {
             </Card>
           </div>
 
-          <CapitalCurveChart data={capitalCurveData} />
+          <div className="mt-8 mb-6">
+            <CapitalCurveChart data={capitalCurveData} />
+          </div>
 
           <Card className="p-4">
             <h2 className="text-xl font-semibold mb-4">Últimas Operações</h2>
@@ -230,4 +231,3 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
-
