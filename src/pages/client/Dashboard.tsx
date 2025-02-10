@@ -21,11 +21,16 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 
 const ClientDashboard = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 7)
+  });
   const [formData, setFormData] = useState({
     account: "123",
     password: "1234",
@@ -83,14 +88,28 @@ const ClientDashboard = () => {
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline">
-                {date ? format(date, "dd/MM/yyyy", { locale: ptBR }) : "Selecione uma data"}
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "dd/MM/yyyy", { locale: ptBR })} -{" "}
+                      {format(date.to, "dd/MM/yyyy", { locale: ptBR })}
+                    </>
+                  ) : (
+                    format(date.from, "dd/MM/yyyy", { locale: ptBR })
+                  )
+                ) : (
+                  "Selecione um período"
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
               <Calendar
-                mode="single"
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
                 selected={date}
                 onSelect={setDate}
+                numberOfMonths={2}
                 locale={ptBR}
               />
             </PopoverContent>
@@ -211,3 +230,4 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
+
