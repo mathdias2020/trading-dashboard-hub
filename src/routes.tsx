@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminDev from "./pages/admin/Dev";
 import ProducerDashboard from "./pages/producer/Dashboard";
 import ClientDashboard from "./pages/client/Dashboard";
 import Layout from "./components/Layout";
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "dashboard", element: <AdminDashboard /> },
+      { path: "dev", element: <AdminDev /> },
     ],
   },
   {

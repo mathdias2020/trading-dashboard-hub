@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,6 +75,9 @@ const AdminDashboard = () => {
           <div className="space-x-4">
             <Button onClick={() => setCurrentView("producers")}>Produtores</Button>
             <Button onClick={() => setCurrentView("notifications")}>Avisos</Button>
+            <Button variant="outline" onClick={() => window.location.href = "/admin/dev"}>
+              Dev Settings
+            </Button>
           </div>
         </div>
 
