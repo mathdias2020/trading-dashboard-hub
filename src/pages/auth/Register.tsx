@@ -52,6 +52,8 @@ const Register = () => {
           data: {
             name: formData.name,
             role: role,
+            cpf: formData.cpf,
+            phone: formData.phone,
           },
         },
       });
