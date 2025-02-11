@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
@@ -72,7 +73,25 @@ const ProducerDashboard = () => {
 
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="p-4">
-          <h3 className="font-semibold">Saldo Diário</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold">Saldo Diário</h3>
+            <div className="flex gap-2">
+              <Button 
+                variant={balanceView === "personal" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setBalanceView("personal")}
+              >
+                Conta
+              </Button>
+              <Button 
+                variant={balanceView === "subscribers" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setBalanceView("subscribers")}
+              >
+                Clientes
+              </Button>
+            </div>
+          </div>
           <p className="text-2xl mt-2">
             R$ {balanceView === "personal" 
               ? producerData.dailyPersonalBalance.toLocaleString()
@@ -81,7 +100,25 @@ const ProducerDashboard = () => {
           </p>
         </Card>
         <Card className="p-4">
-          <h3 className="font-semibold">Saldo Mensal</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="font-semibold">Saldo Mensal</h3>
+            <div className="flex gap-2">
+              <Button 
+                variant={balanceView === "personal" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setBalanceView("personal")}
+              >
+                Conta
+              </Button>
+              <Button 
+                variant={balanceView === "subscribers" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setBalanceView("subscribers")}
+              >
+                Clientes
+              </Button>
+            </div>
+          </div>
           <p className="text-2xl mt-2">
             R$ {balanceView === "personal" 
               ? producerData.monthlyPersonalBalance.toLocaleString()
@@ -139,3 +176,4 @@ const ProducerDashboard = () => {
 };
 
 export default ProducerDashboard;
+
