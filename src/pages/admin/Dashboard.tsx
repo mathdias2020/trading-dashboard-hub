@@ -20,6 +20,7 @@ const AdminDashboard = () => {
     name: "",
     email: "",
     initialPassword: "",
+    producerCode: "",
   });
 
   const [clients, setClients] = useState<Client[]>(mockClients);
@@ -33,7 +34,7 @@ const AdminDashboard = () => {
   };
 
   const handleAddProducer = () => {
-    if (!newProducer.name || !newProducer.email || !newProducer.initialPassword) {
+    if (!newProducer.name || !newProducer.email || !newProducer.initialPassword || !newProducer.producerCode) {
       toast({
         title: "Erro",
         description: "Todos os campos são obrigatórios",
@@ -42,8 +43,8 @@ const AdminDashboard = () => {
       return;
     }
 
-    addProducer(newProducer.name, newProducer.email);
-    setNewProducer({ name: "", email: "", initialPassword: "" });
+    addProducer(newProducer.name, newProducer.email, newProducer.producerCode);
+    setNewProducer({ name: "", email: "", initialPassword: "", producerCode: "" });
     setIsAddProducerOpen(false);
   };
 

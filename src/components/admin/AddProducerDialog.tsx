@@ -11,6 +11,7 @@ interface AddProducerDialogProps {
     name: string;
     email: string;
     initialPassword: string;
+    producerCode: string;
   };
   onNewProducerChange: (field: string, value: string) => void;
   onAddProducer: () => void;
@@ -51,6 +52,14 @@ const AddProducerDialog = ({
               value={newProducer.email}
               onChange={(e) => onNewProducerChange("email", e.target.value)}
               placeholder="email@exemplo.com"
+            />
+          </div>
+          <div className="space-y-2">
+            <label>Código do Produtor</label>
+            <Input
+              value={newProducer.producerCode}
+              onChange={(e) => onNewProducerChange("producerCode", e.target.value)}
+              placeholder="PROD123"
             />
           </div>
           <div className="space-y-2">

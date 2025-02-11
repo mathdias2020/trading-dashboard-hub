@@ -6,4 +6,7 @@ export type Producer = {
   clients: number;
   revenue: number;
   email?: string;
+  producerCode?: string;
+  needsPasswordChange?: boolean;
+  needsMT5Setup?: boolean;
 };

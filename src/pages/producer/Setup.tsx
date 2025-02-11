@@ -5,10 +5,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import TermsOfUseDialog from "@/components/auth/TermsOfUseDialog";
 
 const ProducerSetup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showTerms, setShowTerms] = useState(false);
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -29,8 +31,11 @@ const ProducerSetup = () => {
       return;
     }
 
+    setShowTerms(true);
+  };
+
+  const handleAcceptTerms = () => {
     // Here we would typically update the password and producer details
-    // For now, we'll just show a success message and redirect
     toast({
       title: "Configuração concluída",
       description: "Suas informações foram atualizadas com sucesso",
@@ -103,6 +108,12 @@ const ProducerSetup = () => {
           </Button>
         </form>
       </Card>
+
+      <TermsOfUseDialog 
+        isOpen={showTerms}
+        onAccept={handleAcceptTerms}
+        termsText="Texto das políticas de uso..."
+      />
     </div>
   );
 };
