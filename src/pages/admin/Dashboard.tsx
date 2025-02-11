@@ -1,21 +1,26 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useProducers } from "@/hooks/use-producers";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useTasks } from "@/hooks/use-tasks";
 import Overview from "@/components/admin/Overview";
 import ProducersView from "@/components/admin/ProducersView";
-import NotificationsView from "@/components/admin/NotificationsView";
+import SectorsManagement from "@/components/admin/SectorsManagement";
 import AddProducerDialog from "@/components/admin/AddProducerDialog";
+import AddTaskDialog from "@/components/admin/AddTaskDialog";
 import ProducerTable from "@/components/admin/ProducerTable";
 import { Producer } from "@/types/producer";
 import { Client } from "@/types/client";
 import { mockClients } from "@/mock/clientData";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const AdminDashboard = () => {
-  const [currentView, setCurrentView] = useState<"overview" | "producers" | "notifications">("overview");
+  const [currentView, setCurrentView] = useState<"overview" | "producers" | "tasks" | "sectors">("overview");
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isAddProducerOpen, setIsAddProducerOpen] = useState(false);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [newProducer, setNewProducer] = useState({
     name: "",
     email: "",
@@ -27,6 +32,7 @@ const AdminDashboard = () => {
 
   const { producers, addProducer } = useProducers();
   const { notifications, resolveNotification } = useNotifications();
+  const { tasks, taskTypes, taskSectors, addTask, addTaskType, addTaskSector } = useTasks();
   const { toast } = useToast();
 
   const handleNewProducerChange = (field: string, value: string) => {
@@ -88,18 +94,30 @@ const AdminDashboard = () => {
         <Overview
           producers={producers}
           onViewProducers={() => setCurrentView("producers")}
-          onViewNotifications={() => setCurrentView("notifications")}
+          onViewTasks={() => setCurrentView("tasks")}
+          onViewSectors={() => setCurrentView("sectors")}
         />
 
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Lista de Produtores</h2>
-          <AddProducerDialog
-            isOpen={isAddProducerOpen}
-            onOpenChange={setIsAddProducerOpen}
-            newProducer={newProducer}
-            onNewProducerChange={handleNewProducerChange}
-            onAddProducer={handleAddProducer}
-          />
+          <div className="space-x-4">
+            <AddTaskDialog
+              isOpen={isAddTaskOpen}
+              onOpenChange={setIsAddTaskOpen}
+              taskTypes={taskTypes}
+              taskSectors={taskSectors}
+              producers={producers}
+              clients={clients}
+              onAddTask={addTask}
+            />
+            <AddProducerDialog
+              isOpen={isAddProducerOpen}
+              onOpenChange={setIsAddProducerOpen}
+              newProducer={newProducer}
+              onNewProducerChange={handleNewProducerChange}
+              onAddProducer={handleAddProducer}
+            />
+          </div>
         </div>
 
         <ProducerTable producers={producers} />
@@ -123,13 +141,56 @@ const AdminDashboard = () => {
     );
   }
 
-  if (currentView === "notifications") {
+  if (currentView === "tasks") {
     return (
-      <NotificationsView
-        notifications={notifications}
-        onBack={() => setCurrentView("overview")}
-        onResolveNotification={resolveNotification}
-      />
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => setCurrentView("overview")}>
+            <ArrowLeft className="mr-2" />
+            Voltar
+          </Button>
+          <h1 className="text-2xl font-bold">Tarefas</h1>
+        </div>
+
+        <div className="space-y-4">
+          {tasks.map((task) => (
+            <Card key={task.id} className="p-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-semibold">{task.type}</h3>
+                  <p className="text-sm text-muted-foreground">{task.description}</p>
+                  <p className="text-sm">Setor: {task.sector}</p>
+                  {task.producerId && <p className="text-sm">Produtor: {task.producerId}</p>}
+                  {task.clientId && <p className="text-sm">Cliente: {task.clientId}</p>}
+                  <p className="text-sm text-muted-foreground">
+                    Status: {task.status === "pending" ? "Pendente" : "Concluída"}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (currentView === "sectors") {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => setCurrentView("overview")}>
+            <ArrowLeft className="mr-2" />
+            Voltar
+          </Button>
+        </div>
+
+        <SectorsManagement
+          taskTypes={taskTypes}
+          taskSectors={taskSectors}
+          onAddTaskType={addTaskType}
+          onAddTaskSector={addTaskSector}
+        />
+      </div>
     );
   }
 

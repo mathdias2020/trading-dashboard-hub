@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ProducerCode from "./pages/auth/ProducerCode";
 import AdminDashboard from "./pages/admin/Dashboard";
+import SectorDashboard from "./pages/admin/SectorDashboard";
 import AdminDev from "./pages/admin/Dev";
 import ProducerDashboard from "./pages/producer/Dashboard";
 import ProducerSettings from "./pages/producer/Settings";
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <AdminDashboard /> },
       { path: "dev", element: <AdminDev /> },
+      { path: "sector/:sector", element: <SectorDashboard /> },
     ],
   },
   {
