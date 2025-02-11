@@ -39,7 +39,7 @@ const SettingsForm = ({ formData, setFormData, isApprovedByAdmin }: SettingsForm
       <h2 className="text-xl font-semibold mb-6">Configurações da Conta</h2>
       {!isApprovedByAdmin && (
         <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800">
-          Aguarde a aprovação do administrador para fazer alterações nas configurações.
+          Bloqueado para alterações, entre em contato com o suporte.
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-4">
