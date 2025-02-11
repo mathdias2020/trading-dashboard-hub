@@ -51,11 +51,31 @@ export const useClientManagement = (initialClients: Client[]) => {
     setClients(updatedClients);
   };
 
+  const updateAccountInfo = (clientId: number, accountData: { mt5Account: string; mt5Password: string }) => {
+    const updatedClients = clients.map(client => {
+      if (client.id === clientId) {
+        toast({
+          title: "Informações da conta atualizadas",
+          description: "Suas informações foram enviadas para revisão",
+        });
+        return {
+          ...client,
+          ...accountData,
+          status: "Em revisão"
+        };
+      }
+      return client;
+    });
+    setClients(updatedClients);
+  };
+
   return {
     clients,
     setClients,
     toggleClientStatus,
     updateClientContracts,
     toggleAlgoTrading,
+    updateAccountInfo,
   };
 };
+

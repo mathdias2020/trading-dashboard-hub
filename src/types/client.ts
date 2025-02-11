@@ -4,7 +4,7 @@ export type Client = {
   name: string;
   accountNumber: string;
   monthlyResult: number;
-  status: string;
+  status: "Ativo" | "Inativo" | "Aguardando Pagamento" | "Em revisão" | "Conectado";
   producerId: number;
   email?: string;
   mt5Account?: string;

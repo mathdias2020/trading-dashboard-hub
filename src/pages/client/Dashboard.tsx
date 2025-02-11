@@ -36,8 +36,8 @@ const ClientDashboard = () => {
     mt5Balance: 15000,
     isApprovedByAdmin: true,
     paymentPending: true,
-    paymentReceived: false, // Mock data for payment received status
-    accountConfigured: false, // Mock data for account configuration status
+    paymentReceived: false,
+    accountConfigured: false,
   };
 
   const operations = [
@@ -51,7 +51,6 @@ const ClientDashboard = () => {
       title: "Processando pagamento",
       description: "Você será redirecionado para a página de pagamento",
     });
-    // Simulando pagamento recebido
     setTimeout(() => {
       toast({
         title: "Pagamento recebido",
@@ -59,6 +58,16 @@ const ClientDashboard = () => {
       });
       setActiveTab("settings");
     }, 2000);
+  };
+
+  const handleAccountSubmit = (account: string, password: string) => {
+    setFormData({ account, password });
+    toast({
+      title: "Informações enviadas",
+      description: "Suas informações foram enviadas para revisão. Em breve um administrador irá analisá-las.",
+    });
+    clientData.status = "Em revisão";
+    clientData.accountConfigured = true;
   };
 
   const capitalCurveData = [
@@ -83,6 +92,40 @@ const ClientDashboard = () => {
     });
   };
 
+  const renderActionButton = () => {
+    if (clientData.status === "Em revisão") {
+      return (
+        <div className="flex justify-center">
+          <Button variant="outline" className="w-fit" disabled>
+            Informações em revisão
+          </Button>
+        </div>
+      );
+    }
+
+    if (!clientData.accountConfigured && clientData.paymentReceived) {
+      return (
+        <div className="flex justify-center">
+          <Button variant="outline" className="w-fit" onClick={() => setActiveTab("settings")}>
+            Adicione as informações da conta
+          </Button>
+        </div>
+      );
+    }
+
+    if (clientData.paymentPending && !clientData.paymentReceived) {
+      return (
+        <div className="flex justify-center">
+          <Button onClick={handlePayment} className="w-fit">
+            Pagar mensalidade
+          </Button>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <DashboardHeader
@@ -91,21 +134,7 @@ const ClientDashboard = () => {
         clientName={clientData.name}
       />
 
-      {!clientData.accountConfigured && clientData.paymentReceived && (
-        <div className="flex justify-center">
-          <Button variant="outline" className="w-fit" onClick={() => setActiveTab("settings")}>
-            Adicione as informações da conta
-          </Button>
-        </div>
-      )}
-
-      {clientData.paymentPending && !clientData.paymentReceived && (
-        <div className="flex justify-center">
-          <Button onClick={handlePayment} className="w-fit">
-            Pagar mensalidade
-          </Button>
-        </div>
-      )}
+      {renderActionButton()}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
@@ -137,6 +166,7 @@ const ClientDashboard = () => {
               isApprovedByAdmin={clientData.isApprovedByAdmin}
               formData={formData}
               setFormData={setFormData}
+              onSubmit={handleAccountSubmit}
             />
           </Card>
         </TabsContent>
@@ -146,3 +176,4 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
+
