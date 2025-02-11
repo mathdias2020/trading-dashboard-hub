@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 
 interface DashboardHeaderProps {
   producerName: string;
-  currentView: "dashboard" | "settings";
-  onViewChange: (view: "dashboard" | "settings") => void;
+  currentView: "dashboard" | "settings" | "clients";
+  onViewChange: (view: "dashboard" | "settings" | "clients") => void;
 }
 
 const DashboardHeader = ({ producerName, currentView, onViewChange }: DashboardHeaderProps) => {
@@ -17,6 +17,12 @@ const DashboardHeader = ({ producerName, currentView, onViewChange }: DashboardH
           onClick={() => onViewChange("dashboard")}
         >
           Dashboard
+        </Button>
+        <Button 
+          variant={currentView === "clients" ? "default" : "ghost"}
+          onClick={() => onViewChange("clients")}
+        >
+          Clientes
         </Button>
         <Button 
           variant={currentView === "settings" ? "default" : "ghost"}
