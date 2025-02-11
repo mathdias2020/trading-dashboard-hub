@@ -13,6 +13,7 @@ import { useState } from "react";
 import { Client } from "@/types/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNotifications } from "@/hooks/use-notifications";
+import { Pencil } from "lucide-react";
 
 interface ClientManagementTableProps {
   clients: Client[];
@@ -40,7 +41,7 @@ export const ClientManagementTable = ({
   const handleSaveClick = (client: Client) => {
     if (onUpdateContracts && newMaxContracts >= 0) {
       onUpdateContracts(client.id, newMaxContracts);
-      addLimitChangeNotification(client.name, "Produtor"); // Notifica o admin sobre a mudança
+      addLimitChangeNotification(client.name, "Produtor");
       setEditingClientId(null);
     } else {
       toast({
@@ -64,7 +65,6 @@ export const ClientManagementTable = ({
             <TableHead>AlgoTrading</TableHead>
             <TableHead>Saldo MT5</TableHead>
             <TableHead>Resultado</TableHead>
-            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -101,11 +101,12 @@ export const ClientManagementTable = ({
                   <div className="flex items-center space-x-2">
                     <span>{client.maxContracts}</span>
                     <Button 
-                      variant="outline" 
-                      size="sm"
+                      variant="ghost" 
+                      size="icon"
                       onClick={() => handleEditClick(client)}
+                      className="h-8 w-8 p-0 hover:bg-slate-100 transition-colors"
                     >
-                      Editar
+                      <Pencil className="h-4 w-4 text-slate-500" />
                     </Button>
                   </div>
                 )}
@@ -123,17 +124,6 @@ export const ClientManagementTable = ({
                   R$ {client.result?.toLocaleString()}
                 </span>
               </TableCell>
-              <TableCell>
-                {onToggleStatus && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onToggleStatus(client.id)}
-                  >
-                    {client.status === "Ativo" ? "Desativar" : "Ativar"}
-                  </Button>
-                )}
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -141,4 +131,3 @@ export const ClientManagementTable = ({
     </div>
   );
 };
-
