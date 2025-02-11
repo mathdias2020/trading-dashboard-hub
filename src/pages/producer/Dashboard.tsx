@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
-  const [currentView, setCurrentView] = useState<"dashboard" | "clients">("dashboard");
+  const [currentView, setCurrentView] = useState<"dashboard" | "settings">("dashboard");
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 7)

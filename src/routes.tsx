@@ -10,6 +10,7 @@ import ProducerSetup from "./pages/producer/Setup";
 import ClientDashboard from "./pages/client/Dashboard";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
+import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -43,5 +44,9 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <ClientDashboard /> },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
