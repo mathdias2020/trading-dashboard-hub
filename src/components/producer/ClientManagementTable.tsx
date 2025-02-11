@@ -1,8 +1,6 @@
 
-import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -19,71 +17,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-
-type Client = {
-  id: number;
-  name: string;
-  status: string;
-  subscriptionDate: string;
-  contracts: number;
-  maxContracts: number;
-  algoTrading: boolean;
-  mt5Balance: number;
-  result: number;
-};
+import { type Client } from "@/hooks/use-client-management";
 
 interface ClientManagementTableProps {
   clients: Client[];
-  onUpdateClient: (clients: Client[]) => void;
+  onToggleStatus: (clientId: number) => void;
+  onUpdateContracts: (clientId: number, maxContracts: number) => void;
+  onToggleAlgoTrading: (clientId: number) => void;
 }
 
-export const ClientManagementTable = ({ clients, onUpdateClient }: ClientManagementTableProps) => {
-  const { toast } = useToast();
-
-  const toggleClientStatus = (clientId: number) => {
-    const updatedClients = clients.map(client => {
-      if (client.id === clientId) {
-        const newStatus = client.status === "Ativo" ? "Inativo" : "Ativo";
-        toast({
-          title: "Status alterado",
-          description: `Status do cliente ${client.name} alterado para ${newStatus}`,
-        });
-        return { ...client, status: newStatus };
-      }
-      return client;
-    });
-    onUpdateClient(updatedClients);
-  };
-
-  const updateClientContracts = (clientId: number, maxContracts: number) => {
-    const updatedClients = clients.map(client => {
-      if (client.id === clientId) {
-        toast({
-          title: "Contratos atualizados",
-          description: `Limite de contratos do cliente ${client.name} atualizado para ${maxContracts}`,
-        });
-        return { ...client, maxContracts };
-      }
-      return client;
-    });
-    onUpdateClient(updatedClients);
-  };
-
-  const toggleAlgoTrading = (clientId: number) => {
-    const updatedClients = clients.map(client => {
-      if (client.id === clientId) {
-        const newAlgoTrading = !client.algoTrading;
-        toast({
-          title: "AlgoTrading alterado",
-          description: `AlgoTrading do cliente ${client.name} ${newAlgoTrading ? 'ativado' : 'desativado'}`,
-        });
-        return { ...client, algoTrading: newAlgoTrading };
-      }
-      return client;
-    });
-    onUpdateClient(updatedClients);
-  };
-
+export const ClientManagementTable = ({ 
+  clients, 
+  onToggleStatus,
+  onUpdateContracts,
+  onToggleAlgoTrading,
+}: ClientManagementTableProps) => {
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -117,7 +65,7 @@ export const ClientManagementTable = ({ clients, onUpdateClient }: ClientManagem
               <TableCell>
                 <Switch
                   checked={client.algoTrading}
-                  onCheckedChange={() => toggleAlgoTrading(client.id)}
+                  onCheckedChange={() => onToggleAlgoTrading(client.id)}
                 />
               </TableCell>
               <TableCell>R$ {client.mt5Balance.toLocaleString()}</TableCell>
@@ -130,7 +78,7 @@ export const ClientManagementTable = ({ clients, onUpdateClient }: ClientManagem
                 <div className="flex items-center space-x-2">
                   <Switch
                     checked={client.status === "Ativo"}
-                    onCheckedChange={() => toggleClientStatus(client.id)}
+                    onCheckedChange={() => onToggleStatus(client.id)}
                   />
                   <Dialog>
                     <DialogTrigger asChild>
@@ -151,15 +99,9 @@ export const ClientManagementTable = ({ clients, onUpdateClient }: ClientManagem
                             min={1}
                             onChange={(e) => {
                               const value = parseInt(e.target.value);
-                              if (value < 1) {
-                                toast({
-                                  title: "Erro",
-                                  description: "O limite mínimo é 1 contrato",
-                                  variant: "destructive",
-                                });
-                                return;
+                              if (value >= 1) {
+                                onUpdateContracts(client.id, value);
                               }
-                              updateClientContracts(client.id, value);
                             }}
                           />
                         </div>
@@ -175,3 +117,4 @@ export const ClientManagementTable = ({ clients, onUpdateClient }: ClientManagem
     </div>
   );
 };
+
