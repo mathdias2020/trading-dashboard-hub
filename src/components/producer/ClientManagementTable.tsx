@@ -11,9 +11,17 @@ import { Client } from "@/types/client";
 
 interface ClientManagementTableProps {
   clients: Client[];
+  onToggleStatus?: (clientId: number) => void;
+  onUpdateContracts?: (clientId: number, maxContracts: number) => void;
+  onToggleAlgoTrading?: (clientId: number) => void;
 }
 
-export const ClientManagementTable = ({ clients }: ClientManagementTableProps) => {
+export const ClientManagementTable = ({ 
+  clients,
+  onToggleStatus,
+  onUpdateContracts,
+  onToggleAlgoTrading 
+}: ClientManagementTableProps) => {
   return (
     <div className="overflow-x-auto">
       <Table>
