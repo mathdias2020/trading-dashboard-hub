@@ -23,7 +23,7 @@ const DashboardStats = ({ dailyBalance, monthlyBalance, status }: DashboardStats
         <p className="mt-2">
           <span className={`px-2 py-1 rounded-full text-xs ${
             status === "Ativo" ? "bg-green-100 text-green-800" : 
-            status === "Aguardando Aprovação" ? "bg-yellow-100 text-yellow-800" :
+            status === "Aguardando Pagamento" ? "bg-yellow-100 text-yellow-800" :
             "bg-red-100 text-red-800"
           }`}>
             {status}
