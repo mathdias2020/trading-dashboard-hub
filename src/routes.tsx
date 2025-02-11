@@ -1,7 +1,7 @@
-
 import { createBrowserRouter } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import ProducerCode from "./pages/auth/ProducerCode";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminDev from "./pages/admin/Dev";
 import ProducerDashboard from "./pages/producer/Dashboard";
@@ -21,6 +21,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Login /> },
       { path: "/register", element: <Register /> },
+      { path: "/producer-code", element: <ProducerCode /> },
     ],
   },
   {

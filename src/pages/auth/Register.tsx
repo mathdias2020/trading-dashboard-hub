@@ -33,12 +33,12 @@ const Register = () => {
     // Simulando registro bem-sucedido
     toast({
       title: "Registro realizado com sucesso!",
-      description: "Você será redirecionado para o dashboard.",
+      description: "Você será redirecionado para adicionar um produtor.",
     });
 
-    // Redirecionando para o dashboard de cliente
+    // Redirecionando para a tela de código do produtor
     setTimeout(() => {
-      navigate("/client/dashboard");
+      navigate("/producer-code");
     }, 2000);
   };
 
