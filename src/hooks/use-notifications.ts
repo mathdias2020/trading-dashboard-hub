@@ -24,8 +24,20 @@ export const useNotifications = () => {
     });
   };
 
+  const addLimitChangeNotification = (clientName: string, producerName: string) => {
+    const newNotification: Notification = {
+      id: notifications.length + 1,
+      type: "client",
+      message: `Produtor ${producerName} solicitou alteração de limites para cliente ${clientName}`,
+      date: new Date().toISOString().split('T')[0],
+      status: "pending"
+    };
+    setNotifications([...notifications, newNotification]);
+  };
+
   return {
     notifications,
     resolveNotification,
+    addLimitChangeNotification,
   };
 };
