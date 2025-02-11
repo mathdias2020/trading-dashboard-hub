@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { addDays } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -16,7 +17,7 @@ import { Button } from "@/components/ui/button";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
-  const [currentView, setCurrentView] = useState<"dashboard" | "settings">("dashboard");
+  const [currentView, setCurrentView] = useState<"dashboard" | "clients">("dashboard");
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 7)

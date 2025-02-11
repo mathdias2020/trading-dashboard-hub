@@ -14,7 +14,7 @@ const DashboardHeader = ({ producerName, currentView, onViewChange }: DashboardH
   const handleViewChange = (view: "dashboard" | "clients") => {
     onViewChange(view);
     if (view === "clients") {
-      navigate("/producer/clients");
+      navigate("/producer/settings");
     } else {
       navigate("/producer/dashboard");
     }
@@ -43,4 +43,3 @@ const DashboardHeader = ({ producerName, currentView, onViewChange }: DashboardH
 };
 
 export default DashboardHeader;
-

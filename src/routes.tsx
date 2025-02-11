@@ -16,6 +16,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <AuthLayout />,
+    errorElement: <NotFound />,
     children: [
       { path: "/", element: <Login /> },
       { path: "/register", element: <Register /> },
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: <Layout />,
+    errorElement: <NotFound />,
     children: [
       { path: "dashboard", element: <AdminDashboard /> },
       { path: "dev", element: <AdminDev /> },
@@ -32,6 +34,7 @@ export const router = createBrowserRouter([
   {
     path: "/producer",
     element: <Layout />,
+    errorElement: <NotFound />,
     children: [
       { path: "dashboard", element: <ProducerDashboard /> },
       { path: "settings", element: <ProducerSettings /> },
@@ -41,6 +44,7 @@ export const router = createBrowserRouter([
   {
     path: "/client",
     element: <Layout />,
+    errorElement: <NotFound />,
     children: [
       { path: "dashboard", element: <ClientDashboard /> },
     ],
