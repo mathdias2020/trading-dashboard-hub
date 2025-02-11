@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { type Client } from "@/hooks/use-client-management";
+import { Client } from "@/types/client";
 
 interface ClientManagementTableProps {
   clients: Client[];
