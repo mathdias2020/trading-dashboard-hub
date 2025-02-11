@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { addDays } from "date-fns";
 import { DateRange } from "react-day-picker";
-import CapitalCurveChart from "@/components/CapitalCurveChart";
 import DashboardHeader from "@/components/producer/DashboardHeader";
 import DashboardStats from "@/components/producer/DashboardStats";
-import ClientsTable from "@/components/producer/ClientsTable";
+import CapitalCurveSection from "@/components/producer/dashboard/CapitalCurveSection";
+import ClientsSection from "@/components/producer/dashboard/ClientsSection";
 
 const ProducerDashboard = () => {
   const [balanceView, setBalanceView] = useState<"personal" | "subscribers">("personal");
@@ -91,13 +91,13 @@ const ProducerDashboard = () => {
         status={producerData.status}
       />
 
-      <div className="mt-8 mb-6">
-        <CapitalCurveChart 
-          data={balanceView === "personal" ? personalCapitalCurveData : subscribersCapitalCurveData} 
-        />
-      </div>
+      <CapitalCurveSection 
+        balanceView={balanceView}
+        personalCapitalCurveData={personalCapitalCurveData}
+        subscribersCapitalCurveData={subscribersCapitalCurveData}
+      />
 
-      <ClientsTable 
+      <ClientsSection 
         clients={clients}
         dateRange={date}
         onDateRangeChange={setDate}
