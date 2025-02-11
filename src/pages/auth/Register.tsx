@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import TermsOfUseDialog from "@/components/auth/TermsOfUseDialog";
 
 const Register = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [showTerms, setShowTerms] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,6 +19,55 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
+
+  // Mock do texto dos termos de uso (em produção, viria do backend)
+  const termsText = `
+    1. Termos e Condições Gerais
+
+    Bem-vindo à nossa plataforma de copytrading. Ao utilizar nossos serviços, você concorda com estes termos.
+
+    2. Responsabilidades do Usuário
+
+    O usuário é responsável por:
+    - Manter a segurança de sua conta
+    - Fornecer informações verdadeiras
+    - Respeitar as diretrizes da plataforma
+
+    3. Riscos do Investimento
+
+    Todo investimento possui riscos. O usuário declara estar ciente que:
+    - Resultados passados não garantem resultados futuros
+    - Pode haver perda parcial ou total do capital investido
+    - Deve investir apenas o que está disposto a perder
+
+    4. Política de Privacidade
+
+    Nos comprometemos a:
+    - Proteger seus dados pessoais
+    - Não compartilhar informações sem consentimento
+    - Manter a confidencialidade das operações
+
+    5. Taxas e Pagamentos
+
+    O usuário concorda em:
+    - Pagar as taxas estabelecidas
+    - Manter o pagamento em dia
+    - Aceitar as condições de cobrança
+
+    6. Cancelamento
+
+    O serviço pode ser cancelado:
+    - A qualquer momento pelo usuário
+    - Em caso de violação dos termos
+    - Por decisão da administração
+
+    7. Modificações dos Termos
+
+    Reservamos o direito de:
+    - Alterar estes termos quando necessário
+    - Notificar os usuários sobre mudanças
+    - Requerer nova aceitação quando relevante
+  `.trim();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +81,15 @@ const Register = () => {
       return;
     }
 
-    // Simulando registro bem-sucedido
+    setShowTerms(true);
+  };
+
+  const handleAcceptTerms = () => {
     toast({
       title: "Registro realizado com sucesso!",
       description: "Você será redirecionado para adicionar um produtor.",
     });
 
-    // Redirecionando para a tela de código do produtor
     setTimeout(() => {
       navigate("/producer-code");
     }, 2000);
@@ -118,6 +171,12 @@ const Register = () => {
           </Link>
         </p>
       </div>
+
+      <TermsOfUseDialog 
+        isOpen={showTerms}
+        onAccept={handleAcceptTerms}
+        termsText={termsText}
+      />
     </div>
   );
 };
