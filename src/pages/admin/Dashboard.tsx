@@ -1,9 +1,18 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, UserPlus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Producer = {
   id: number;
@@ -11,6 +20,7 @@ type Producer = {
   status: string;
   clients: number;
   revenue: number;
+  email?: string;
 };
 
 type Client = {
@@ -33,13 +43,19 @@ type Notification = {
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<"overview" | "producers" | "notifications">("overview");
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
+  const [isAddProducerOpen, setIsAddProducerOpen] = useState(false);
+  const [newProducer, setNewProducer] = useState({
+    name: "",
+    email: "",
+    initialPassword: "",
+  });
   const { toast } = useToast();
 
-  const producers: Producer[] = [
-    { id: 1, name: "João Silva", status: "Ativo", clients: 15, revenue: 25000 },
-    { id: 2, name: "Maria Santos", status: "Pendente", clients: 8, revenue: 12000 },
-    { id: 3, name: "Pedro Oliveira", status: "Inativo", clients: 0, revenue: 0 },
-  ];
+  const [producers, setProducers] = useState<Producer[]>([
+    { id: 1, name: "João Silva", status: "Ativo", clients: 15, revenue: 25000, email: "joao@example.com" },
+    { id: 2, name: "Maria Santos", status: "Pendente", clients: 8, revenue: 12000, email: "maria@example.com" },
+    { id: 3, name: "Pedro Oliveira", status: "Inativo", clients: 0, revenue: 0, email: "pedro@example.com" },
+  ]);
 
   const clients: Client[] = [
     { id: 1, name: "Cliente 1", accountNumber: "001", monthlyResult: 1500, status: "Ativo", producerId: 1 },
@@ -51,6 +67,36 @@ const AdminDashboard = () => {
     { id: 1, type: "producer", message: "Novo produtor aguardando aprovação: Maria Santos", date: "2024-03-20", status: "pending" },
     { id: 2, type: "client", message: "Cliente solicitou alteração de dados bancários", date: "2024-03-19", status: "pending" },
   ];
+
+  const handleAddProducer = () => {
+    if (!newProducer.name || !newProducer.email || !newProducer.initialPassword) {
+      toast({
+        title: "Erro",
+        description: "Todos os campos são obrigatórios",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newId = producers.length + 1;
+    const producerToAdd: Producer = {
+      id: newId,
+      name: newProducer.name,
+      email: newProducer.email,
+      status: "Pendente",
+      clients: 0,
+      revenue: 0,
+    };
+
+    setProducers([...producers, producerToAdd]);
+    setNewProducer({ name: "", email: "", initialPassword: "" });
+    setIsAddProducerOpen(false);
+
+    toast({
+      title: "Produtor adicionado",
+      description: `${newProducer.name} foi adicionado como produtor`,
+    });
+  };
 
   const handleSelectProducer = (producer: Producer) => {
     setSelectedProducer(producer);
@@ -96,13 +142,61 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">Lista de Produtores</h2>
+          <Dialog open={isAddProducerOpen} onOpenChange={setIsAddProducerOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <UserPlus className="mr-2 h-4 w-4" />
+                Adicionar Produtor
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Adicionar Novo Produtor</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <label>Nome</label>
+                  <Input
+                    value={newProducer.name}
+                    onChange={(e) => setNewProducer({ ...newProducer, name: e.target.value })}
+                    placeholder="Nome completo"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label>Email</label>
+                  <Input
+                    type="email"
+                    value={newProducer.email}
+                    onChange={(e) => setNewProducer({ ...newProducer, email: e.target.value })}
+                    placeholder="email@exemplo.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label>Senha Inicial</label>
+                  <Input
+                    type="password"
+                    value={newProducer.initialPassword}
+                    onChange={(e) => setNewProducer({ ...newProducer, initialPassword: e.target.value })}
+                    placeholder="Senha inicial"
+                  />
+                </div>
+                <Button onClick={handleAddProducer} className="w-full">
+                  Adicionar Produtor
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <Card className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Lista de Produtores</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-2">Nome</th>
+                  <th className="text-left p-2">Email</th>
                   <th className="text-left p-2">Status</th>
                   <th className="text-left p-2">Clientes</th>
                   <th className="text-left p-2">Receita</th>
@@ -112,6 +206,7 @@ const AdminDashboard = () => {
                 {producers.map((producer) => (
                   <tr key={producer.id} className="border-b">
                     <td className="p-2">{producer.name}</td>
+                    <td className="p-2">{producer.email}</td>
                     <td className="p-2">
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         producer.status === "Ativo" ? "bg-green-100 text-green-800" :
