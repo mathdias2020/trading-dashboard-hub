@@ -8,7 +8,6 @@ import ProducerDashboard from "./pages/producer/Dashboard";
 import ProducerSettings from "./pages/producer/Settings";
 import ProducerSetup from "./pages/producer/Setup";
 import ClientDashboard from "./pages/client/Dashboard";
-import ClientsPage from "./pages/producer/Clients";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
 
@@ -36,7 +35,6 @@ export const router = createBrowserRouter([
       { path: "dashboard", element: <ProducerDashboard /> },
       { path: "settings", element: <ProducerSettings /> },
       { path: "setup", element: <ProducerSetup /> },
-      { path: "clients", element: <ClientsPage /> },
     ],
   },
   {
