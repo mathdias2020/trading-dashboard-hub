@@ -3,7 +3,6 @@ import { useState } from "react";
 import { addDays } from "date-fns";
 import { DateRange } from "react-day-picker";
 import DashboardHeader from "@/components/producer/DashboardHeader";
-import DashboardStats from "@/components/producer/DashboardStats";
 import CapitalCurveSection from "@/components/producer/dashboard/CapitalCurveSection";
 import { Card } from "@/components/ui/card";
 import {
@@ -103,16 +102,6 @@ const ProducerDashboard = () => {
           </p>
         </Card>
       </div>
-
-      <DashboardStats 
-        personalBalance={producerData.personalBalance}
-        subscribersBalance={producerData.subscribersBalance}
-        balanceView={balanceView}
-        onBalanceViewChange={setBalanceView}
-        activeClientsCount={producerData.activeSubscribers}
-        monthlyRevenue={producerData.monthlyRevenue}
-        status={producerData.status}
-      />
 
       <CapitalCurveSection 
         balanceView={balanceView}
