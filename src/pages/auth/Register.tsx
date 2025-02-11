@@ -9,7 +9,6 @@ import { useToast } from "@/components/ui/use-toast";
 const Register = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [role, setRole] = useState<"producer" | "client" | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -37,49 +36,16 @@ const Register = () => {
       description: "Você será redirecionado para o dashboard.",
     });
 
-    // Redirecionando baseado no papel
+    // Redirecionando para o dashboard de cliente
     setTimeout(() => {
-      if (role === "producer") {
-        navigate("/producer/dashboard");
-      } else if (role === "client") {
-        navigate("/client/dashboard");
-      }
+      navigate("/client/dashboard");
     }, 2000);
   };
-
-  if (!role) {
-    return (
-      <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold">Escolha seu perfil</h2>
-          <p className="text-muted-foreground mt-2">Como você deseja se registrar?</p>
-        </div>
-        <div className="grid gap-4">
-          <Button onClick={() => setRole("producer")} className="h-20">
-            Produtor
-          </Button>
-          <Button onClick={() => setRole("client")} className="h-20">
-            Cliente
-          </Button>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Já tem uma conta?{" "}
-            <Link to="/" className="text-primary hover:underline">
-              Faça login
-            </Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-semibold">
-          Registro - {role === "producer" ? "Produtor" : "Cliente"}
-        </h2>
+        <h2 className="text-2xl font-semibold">Criar nova conta</h2>
         <p className="text-muted-foreground mt-2">Preencha seus dados para criar sua conta</p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -145,13 +111,12 @@ const Register = () => {
         </Button>
       </form>
       <div className="text-center">
-        <Button
-          variant="link"
-          className="text-sm text-muted-foreground"
-          onClick={() => setRole(null)}
-        >
-          Voltar
-        </Button>
+        <p className="text-sm text-muted-foreground">
+          Já tem uma conta?{" "}
+          <Link to="/" className="text-primary hover:underline">
+            Faça login
+          </Link>
+        </p>
       </div>
     </div>
   );
