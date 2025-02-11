@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -33,18 +34,19 @@ const ClientDashboard = () => {
   const [formData, setFormData] = useState({
     account: "123",
     password: "1234",
-    contracts: 1
   });
 
   const clientData = {
     name: "Ana Costa",
-    status: "Ativo",
+    status: "Aguardando Aprovação",
     producer: "João Silva",
     lastOperation: "2024-02-09",
-    monthlyReturn: 1200,
+    dailyBalance: 500,
+    monthlyBalance: 1200,
     producerContractLimit: 10,
     algoTrading: true,
     mt5Balance: 15000,
+    isApprovedByAdmin: false,
   };
 
   const operations = [
@@ -65,11 +67,11 @@ const ClientDashboard = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.contracts > clientData.producerContractLimit) {
+    if (!clientData.isApprovedByAdmin) {
       toast({
         variant: "destructive",
-        title: "Erro ao atualizar contratos",
-        description: `O número máximo de contratos permitido é ${clientData.producerContractLimit}`
+        title: "Acesso negado",
+        description: "Aguarde a aprovação do administrador para fazer alterações."
       });
       return;
     }
@@ -136,26 +138,24 @@ const ClientDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             <Card className="p-4">
-              <h3 className="font-semibold">Contratos</h3>
-              <p className="text-2xl">{formData.contracts}</p>
+              <h3 className="font-semibold">Saldo Diário</h3>
+              <p className="text-2xl">R$ {clientData.dailyBalance.toLocaleString()}</p>
             </Card>
             <Card className="p-4">
-              <h3 className="font-semibold">Retorno Mensal</h3>
-              <p className="text-2xl">R$ {clientData.monthlyReturn.toLocaleString()}</p>
-            </Card>
-            <Card className="p-4">
-              <h3 className="font-semibold">Saldo MT5</h3>
-              <p className="text-2xl">R$ {clientData.mt5Balance.toLocaleString()}</p>
+              <h3 className="font-semibold">Saldo Mensal</h3>
+              <p className="text-2xl">R$ {clientData.monthlyBalance.toLocaleString()}</p>
             </Card>
             <Card className="p-4">
               <h3 className="font-semibold">Status</h3>
               <p className="mt-2">
                 <span className={`px-2 py-1 rounded-full text-xs ${
-                  clientData.algoTrading ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
+                  clientData.status === "Ativo" ? "bg-green-100 text-green-800" : 
+                  clientData.status === "Aguardando Aprovação" ? "bg-yellow-100 text-yellow-800" :
+                  "bg-red-100 text-red-800"
                 }`}>
-                  AlgoTrading {clientData.algoTrading ? "Ativo" : "Inativo"}
+                  {clientData.status}
                 </span>
               </p>
             </Card>
@@ -199,6 +199,11 @@ const ClientDashboard = () => {
         <TabsContent value="settings">
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-6">Configurações da Conta</h2>
+            {!clientData.isApprovedByAdmin && (
+              <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800">
+                Aguarde a aprovação do administrador para fazer alterações nas configurações.
+              </div>
+            )}
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div>
                 <label className="text-sm font-medium">Conta</label>
@@ -206,6 +211,7 @@ const ClientDashboard = () => {
                   value={formData.account} 
                   onChange={(e) => setFormData({...formData, account: e.target.value})}
                   className="mt-1"
+                  disabled={!clientData.isApprovedByAdmin}
                 />
               </div>
               <div>
@@ -215,23 +221,10 @@ const ClientDashboard = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
                   className="mt-1"
+                  disabled={!clientData.isApprovedByAdmin}
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Contratos</label>
-                <Input 
-                  type="number"
-                  min="1"
-                  max={clientData.producerContractLimit}
-                  value={formData.contracts}
-                  onChange={(e) => setFormData({...formData, contracts: parseInt(e.target.value)})}
-                  className="mt-1"
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  Limite máximo: {clientData.producerContractLimit} contratos
-                </p>
-              </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={!clientData.isApprovedByAdmin}>
                 Salvar Alterações
               </Button>
             </form>
@@ -243,3 +236,4 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
+
