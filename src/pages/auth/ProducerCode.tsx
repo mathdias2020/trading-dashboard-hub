@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { useNotifications } from "@/hooks/use-notifications";
 
 // Simulação de banco de dados
 const mockProducers = [
@@ -16,6 +17,7 @@ const mockProducers = [
 const ProducerCode = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { notifications, addLimitChangeNotification } = useNotifications();
   const [producerCode, setProducerCode] = useState("");
   const [producer, setProducer] = useState<{ code: string; name: string } | null>(
     null
@@ -48,6 +50,12 @@ const ProducerCode = () => {
   };
 
   const handleNoCode = () => {
+    // Criar notificação para o admin
+    addLimitChangeNotification("Novo Cliente", "Administrador");
+    toast({
+      title: "Solicitação enviada",
+      description: "Nossa equipe entrará em contato em breve",
+    });
     navigate("/client/no-producer");
   };
 
