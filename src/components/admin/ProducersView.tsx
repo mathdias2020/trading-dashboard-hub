@@ -7,6 +7,8 @@ import { Client } from "@/types/client";
 import { useState } from "react";
 import AddClientDialog from "./AddClientDialog";
 import { useToast } from "@/hooks/use-toast";
+import { ClientManagementTable } from "@/components/producer/ClientManagementTable";
+import { useClientManagement } from "@/hooks/use-client-management";
 
 interface ProducersViewProps {
   producers: Producer[];
@@ -24,7 +26,7 @@ interface ProducersViewProps {
 
 const ProducersView = ({
   producers,
-  clients,
+  clients: initialClients,
   selectedProducer,
   onBack,
   onSelectProducer,
@@ -32,6 +34,17 @@ const ProducersView = ({
 }: ProducersViewProps) => {
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
   const { toast } = useToast();
+  
+  const filteredClients = initialClients.filter(
+    client => client.producerId === selectedProducer?.id
+  );
+
+  const { 
+    clients, 
+    toggleClientStatus, 
+    updateClientContracts, 
+    toggleAlgoTrading 
+  } = useClientManagement(filteredClients);
 
   const handleAddClient = (clientData: {
     name: string;
@@ -87,30 +100,12 @@ const ProducersView = ({
               />
             </div>
             <div className="space-y-4">
-              {clients
-                .filter(client => client.producerId === selectedProducer.id)
-                .map(client => (
-                  <Card key={client.id} className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="font-semibold">{client.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {client.email || `Conta: ${client.accountNumber}`}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">
-                          R$ {client.monthlyResult.toLocaleString()}
-                        </p>
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          client.status === "Ativo" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                        }`}>
-                          {client.status}
-                        </span>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+              <ClientManagementTable 
+                clients={clients}
+                onToggleStatus={toggleClientStatus}
+                onUpdateContracts={updateClientContracts}
+                onToggleAlgoTrading={toggleAlgoTrading}
+              />
             </div>
           </Card>
         )}

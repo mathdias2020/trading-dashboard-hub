@@ -10,7 +10,12 @@ export type Client = {
   mt5Account?: string;
   mt5Password?: string;
   contracts?: number;
+  maxContracts?: number;
+  algoTrading?: boolean;
   producerCode?: string;
   needsPasswordChange?: boolean;
+  subscriptionDate?: string;
+  mt5Balance?: number;
+  result?: number;
 };
 
