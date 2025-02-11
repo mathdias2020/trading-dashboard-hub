@@ -21,15 +21,15 @@ const AdminDashboard = () => {
     initialPassword: "",
   });
 
-  const { producers, addProducer } = useProducers();
-  const { notifications, resolveNotification } = useNotifications();
-  const { toast } = useToast();
-
-  const clients: Client[] = [
+  const [clients, setClients] = useState<Client[]>([
     { id: 1, name: "Cliente 1", accountNumber: "001", monthlyResult: 1500, status: "Ativo", producerId: 1 },
     { id: 2, name: "Cliente 2", accountNumber: "002", monthlyResult: 2500, status: "Ativo", producerId: 1 },
     { id: 3, name: "Cliente 3", accountNumber: "003", monthlyResult: 1800, status: "Pendente", producerId: 2 },
-  ];
+  ]);
+
+  const { producers, addProducer } = useProducers();
+  const { notifications, resolveNotification } = useNotifications();
+  const { toast } = useToast();
 
   const handleNewProducerChange = (field: string, value: string) => {
     setNewProducer(prev => ({ ...prev, [field]: value }));
@@ -56,6 +56,26 @@ const AdminDashboard = () => {
       title: "Produtor selecionado",
       description: `Visualizando clientes de ${producer.name}`,
     });
+  };
+
+  const handleAddClient = (clientData: {
+    name: string;
+    email: string;
+    initialPassword: string;
+    producerId: number;
+  }) => {
+    const newClient: Client = {
+      id: clients.length + 1,
+      name: clientData.name,
+      email: clientData.email,
+      accountNumber: "",
+      monthlyResult: 0,
+      status: "Pendente",
+      producerId: clientData.producerId,
+      needsPasswordChange: true,
+    };
+
+    setClients([...clients, newClient]);
   };
 
   if (currentView === "overview") {
@@ -94,6 +114,7 @@ const AdminDashboard = () => {
           setSelectedProducer(null);
         }}
         onSelectProducer={handleSelectProducer}
+        onAddClient={handleAddClient}
       />
     );
   }
@@ -112,3 +133,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
