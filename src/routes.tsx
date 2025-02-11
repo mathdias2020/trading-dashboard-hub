@@ -8,6 +8,7 @@ import ProducerDashboard from "./pages/producer/Dashboard";
 import ProducerSettings from "./pages/producer/Settings";
 import ProducerSetup from "./pages/producer/Setup";
 import ClientDashboard from "./pages/client/Dashboard";
+import NoProducer from "./pages/client/NoProducer";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
 import NotFound from "./pages/NotFound";
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: "dashboard", element: <ClientDashboard /> },
+      { path: "no-producer", element: <NoProducer /> },
     ],
   },
   {
