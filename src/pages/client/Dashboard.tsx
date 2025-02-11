@@ -6,27 +6,19 @@ import { ptBR } from "date-fns/locale";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { DateRange } from "react-day-picker";
 import { addDays, isWithinInterval, parseISO } from "date-fns";
+import DashboardStats from "@/components/client/overview/DashboardStats";
+import OperationsTable from "@/components/client/overview/OperationsTable";
+import AccountSettings from "@/components/client/settings/AccountSettings";
 
 const ClientDashboard = () => {
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("overview");
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 7)
@@ -64,22 +56,6 @@ const ClientDashboard = () => {
     { date: "2024-02-06", value: 320 },
     { date: "2024-02-07", value: 400 },
   ];
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clientData.isApprovedByAdmin) {
-      toast({
-        variant: "destructive",
-        title: "Acesso negado",
-        description: "Aguarde a aprovação do administrador para fazer alterações."
-      });
-      return;
-    }
-    toast({
-      title: "Configurações atualizadas",
-      description: "Suas alterações foram salvas com sucesso"
-    });
-  };
 
   const getFilteredCapitalData = () => {
     if (!date?.from || !date?.to) return capitalCurveData;
@@ -138,28 +114,11 @@ const ClientDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card className="p-4">
-              <h3 className="font-semibold">Saldo Diário</h3>
-              <p className="text-2xl">R$ {clientData.dailyBalance.toLocaleString()}</p>
-            </Card>
-            <Card className="p-4">
-              <h3 className="font-semibold">Saldo Mensal</h3>
-              <p className="text-2xl">R$ {clientData.monthlyBalance.toLocaleString()}</p>
-            </Card>
-            <Card className="p-4">
-              <h3 className="font-semibold">Status</h3>
-              <p className="mt-2">
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  clientData.status === "Ativo" ? "bg-green-100 text-green-800" : 
-                  clientData.status === "Aguardando Aprovação" ? "bg-yellow-100 text-yellow-800" :
-                  "bg-red-100 text-red-800"
-                }`}>
-                  {clientData.status}
-                </span>
-              </p>
-            </Card>
-          </div>
+          <DashboardStats 
+            dailyBalance={clientData.dailyBalance}
+            monthlyBalance={clientData.monthlyBalance}
+            status={clientData.status}
+          />
 
           <div className="mt-8 mb-6">
             <CapitalCurveChart data={getFilteredCapitalData()} />
@@ -167,67 +126,18 @@ const ClientDashboard = () => {
 
           <Card className="p-4">
             <h2 className="text-xl font-semibold mb-4">Últimas Operações</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-2">Data</th>
-                    <th className="text-left p-2">Tipo</th>
-                    <th className="text-left p-2">Ativo</th>
-                    <th className="text-left p-2">Resultado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {operations.map((op) => (
-                    <tr key={op.id} className="border-b">
-                      <td className="p-2">{new Date(op.date).toLocaleDateString()}</td>
-                      <td className="p-2">{op.type}</td>
-                      <td className="p-2">{op.symbol}</td>
-                      <td className="p-2">
-                        <span className={op.result > 0 ? "text-green-600" : "text-red-600"}>
-                          R$ {op.result.toLocaleString()}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <OperationsTable operations={operations} />
           </Card>
         </TabsContent>
 
         <TabsContent value="settings">
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-6">Configurações da Conta</h2>
-            {!clientData.isApprovedByAdmin && (
-              <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800">
-                Aguarde a aprovação do administrador para fazer alterações nas configurações.
-              </div>
-            )}
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Conta</label>
-                <Input 
-                  value={formData.account} 
-                  onChange={(e) => setFormData({...formData, account: e.target.value})}
-                  className="mt-1"
-                  disabled={!clientData.isApprovedByAdmin}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Senha</label>
-                <Input 
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="mt-1"
-                  disabled={!clientData.isApprovedByAdmin}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={!clientData.isApprovedByAdmin}>
-                Salvar Alterações
-              </Button>
-            </form>
+            <AccountSettings 
+              isApprovedByAdmin={clientData.isApprovedByAdmin}
+              formData={formData}
+              setFormData={setFormData}
+            />
           </Card>
         </TabsContent>
       </Tabs>
@@ -236,4 +146,3 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
-
