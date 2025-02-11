@@ -67,7 +67,7 @@ const AdminDashboard = () => {
       email: clientData.email,
       accountNumber: "",
       monthlyResult: 0,
-      status: "Pendente",
+      status: "Aguardando Pagamento",
       producerId: clientData.producerId,
       needsPasswordChange: true,
       subscriptionDate: new Date().toISOString(),

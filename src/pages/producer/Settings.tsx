@@ -4,14 +4,15 @@ import { Card } from "@/components/ui/card";
 import { SettingsHeader } from "@/components/producer/SettingsHeader";
 import { ClientManagementTable } from "@/components/producer/ClientManagementTable";
 import { useClientManagement } from "@/hooks/use-client-management";
+import { Client } from "@/types/client";
 
-const initialClients = [
+const initialClients: Client[] = [
   { 
     id: 1, 
     name: "Ana Costa",
     accountNumber: "001",
     monthlyResult: 2500,
-    status: "Ativo",
+    status: "Ativo" as const,
     producerId: 1,
     subscriptionDate: "2024-01-15",
     contracts: 2,
@@ -25,7 +26,7 @@ const initialClients = [
     name: "Carlos Mendes",
     accountNumber: "002",
     monthlyResult: -500,
-    status: "Ativo",
+    status: "Ativo" as const,
     producerId: 1,
     subscriptionDate: "2024-02-01",
     contracts: 1,
@@ -39,7 +40,7 @@ const initialClients = [
     name: "Beatriz Lima",
     accountNumber: "003",
     monthlyResult: 1200,
-    status: "Inativo",
+    status: "Inativo" as const,
     producerId: 1,
     subscriptionDate: "2024-01-10",
     contracts: 0,
@@ -76,4 +77,3 @@ const ProducerSettings = () => {
 };
 
 export default ProducerSettings;
-
