@@ -1,18 +1,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-
-export type Client = {
-  id: number;
-  name: string;
-  status: string;
-  subscriptionDate: string;
-  contracts: number;
-  maxContracts: number;
-  algoTrading: boolean;
-  mt5Balance: number;
-  result: number;
-};
+import { Client } from "@/types/client";
 
 export const useClientManagement = (initialClients: Client[]) => {
   const [clients, setClients] = useState<Client[]>(initialClients);
@@ -70,4 +59,3 @@ export const useClientManagement = (initialClients: Client[]) => {
     toggleAlgoTrading,
   };
 };
-

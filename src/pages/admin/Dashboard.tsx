@@ -10,6 +10,7 @@ import AddProducerDialog from "@/components/admin/AddProducerDialog";
 import ProducerTable from "@/components/admin/ProducerTable";
 import { Producer } from "@/types/producer";
 import { Client } from "@/types/client";
+import { mockClients } from "@/mock/clientData";
 
 const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<"overview" | "producers" | "notifications">("overview");
@@ -21,11 +22,7 @@ const AdminDashboard = () => {
     initialPassword: "",
   });
 
-  const [clients, setClients] = useState<Client[]>([
-    { id: 1, name: "Cliente 1", accountNumber: "001", monthlyResult: 1500, status: "Ativo", producerId: 1 },
-    { id: 2, name: "Cliente 2", accountNumber: "002", monthlyResult: 2500, status: "Ativo", producerId: 1 },
-    { id: 3, name: "Cliente 3", accountNumber: "003", monthlyResult: 1800, status: "Pendente", producerId: 2 },
-  ]);
+  const [clients, setClients] = useState<Client[]>(mockClients);
 
   const { producers, addProducer } = useProducers();
   const { notifications, resolveNotification } = useNotifications();
@@ -73,6 +70,12 @@ const AdminDashboard = () => {
       status: "Pendente",
       producerId: clientData.producerId,
       needsPasswordChange: true,
+      subscriptionDate: new Date().toISOString(),
+      contracts: 0,
+      maxContracts: 5,
+      algoTrading: false,
+      mt5Balance: 0,
+      result: 0,
     };
 
     setClients([...clients, newClient]);
@@ -133,4 +136,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
