@@ -25,9 +25,19 @@ const AccountSettings = ({ isApprovedByAdmin, formData, setFormData }: AccountSe
       });
       return;
     }
+
+    if (!formData.account || !formData.password) {
+      toast({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos"
+      });
+      return;
+    }
+
     toast({
       title: "Configurações atualizadas",
-      description: "Suas alterações foram salvas com sucesso"
+      description: "Suas informações foram salvas com sucesso"
     });
   };
 
@@ -45,6 +55,8 @@ const AccountSettings = ({ isApprovedByAdmin, formData, setFormData }: AccountSe
           onChange={(e) => setFormData({...formData, account: e.target.value})}
           className="mt-1"
           disabled={!isApprovedByAdmin}
+          required
+          placeholder="Digite o número da sua conta"
         />
       </div>
       <div>
@@ -55,6 +67,8 @@ const AccountSettings = ({ isApprovedByAdmin, formData, setFormData }: AccountSe
           onChange={(e) => setFormData({...formData, password: e.target.value})}
           className="mt-1"
           disabled={!isApprovedByAdmin}
+          required
+          placeholder="Digite sua senha"
         />
       </div>
       <Button type="submit" className="w-full" disabled={!isApprovedByAdmin}>

@@ -17,9 +17,10 @@ const ClientDashboard = () => {
     from: new Date(),
     to: addDays(new Date(), 7)
   });
+  const [activeTab, setActiveTab] = useState("overview");
   const [formData, setFormData] = useState({
-    account: "123",
-    password: "1234",
+    account: "",
+    password: "",
   });
   const { toast } = useToast();
 
@@ -33,8 +34,10 @@ const ClientDashboard = () => {
     producerContractLimit: 10,
     algoTrading: true,
     mt5Balance: 15000,
-    isApprovedByAdmin: false,
-    paymentPending: true, // Mock data for payment status
+    isApprovedByAdmin: true,
+    paymentPending: true,
+    paymentReceived: false, // Mock data for payment received status
+    accountConfigured: false, // Mock data for account configuration status
   };
 
   const operations = [
@@ -48,6 +51,14 @@ const ClientDashboard = () => {
       title: "Processando pagamento",
       description: "Você será redirecionado para a página de pagamento",
     });
+    // Simulando pagamento recebido
+    setTimeout(() => {
+      toast({
+        title: "Pagamento recebido",
+        description: "Por favor, configure sua conta para continuar",
+      });
+      setActiveTab("settings");
+    }, 2000);
   };
 
   const capitalCurveData = [
@@ -80,7 +91,15 @@ const ClientDashboard = () => {
         clientName={clientData.name}
       />
 
-      {clientData.paymentPending && (
+      {!clientData.accountConfigured && clientData.paymentReceived && (
+        <div className="flex justify-center">
+          <Button variant="outline" className="w-fit" onClick={() => setActiveTab("settings")}>
+            Adicione as informações da conta
+          </Button>
+        </div>
+      )}
+
+      {clientData.paymentPending && !clientData.paymentReceived && (
         <div className="flex justify-center">
           <Button onClick={handlePayment} className="w-fit">
             Pagar mensalidade
@@ -88,7 +107,7 @@ const ClientDashboard = () => {
         </div>
       )}
 
-      <Tabs defaultValue="overview" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="settings">Configurações</TabsTrigger>
