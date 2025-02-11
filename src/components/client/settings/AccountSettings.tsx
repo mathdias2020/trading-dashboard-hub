@@ -10,9 +10,10 @@ interface AccountSettingsProps {
     password: string;
   };
   setFormData: (data: { account: string; password: string }) => void;
+  onSubmit?: (account: string, password: string) => void;
 }
 
-const AccountSettings = ({ isApprovedByAdmin, formData, setFormData }: AccountSettingsProps) => {
+const AccountSettings = ({ isApprovedByAdmin, formData, setFormData, onSubmit }: AccountSettingsProps) => {
   const { toast } = useToast();
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -33,6 +34,10 @@ const AccountSettings = ({ isApprovedByAdmin, formData, setFormData }: AccountSe
         description: "Por favor, preencha todos os campos"
       });
       return;
+    }
+
+    if (onSubmit) {
+      onSubmit(formData.account, formData.password);
     }
 
     toast({

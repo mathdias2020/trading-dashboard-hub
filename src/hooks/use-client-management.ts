@@ -10,7 +10,7 @@ export const useClientManagement = (initialClients: Client[]) => {
   const toggleClientStatus = (clientId: number) => {
     const updatedClients = clients.map(client => {
       if (client.id === clientId) {
-        const newStatus = client.status === "Ativo" ? "Inativo" : "Ativo";
+        const newStatus: Client['status'] = client.status === "Ativo" ? "Inativo" : "Ativo";
         toast({
           title: "Status alterado",
           description: `Status do cliente ${client.name} alterado para ${newStatus}`,
@@ -61,7 +61,7 @@ export const useClientManagement = (initialClients: Client[]) => {
         return {
           ...client,
           ...accountData,
-          status: "Em revisão"
+          status: "Em revisão" as const
         };
       }
       return client;
@@ -78,4 +78,3 @@ export const useClientManagement = (initialClients: Client[]) => {
     updateAccountInfo,
   };
 };
-

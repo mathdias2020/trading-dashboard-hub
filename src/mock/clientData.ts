@@ -45,7 +45,7 @@ export const mockClients: Client[] = [
     name: "Cliente 3",
     accountNumber: "003",
     monthlyResult: 1800,
-    status: "Pendente",
+    status: "Aguardando Pagamento",
     producerId: 2,
     email: "cliente3@example.com",
     mt5Account: "MT5003",
