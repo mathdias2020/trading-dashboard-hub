@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useProducers } from "@/hooks/use-producers";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useTasks } from "@/hooks/use-tasks";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import ProducersView from "@/components/admin/ProducersView";
 import SectorsManagement from "@/components/admin/SectorsManagement";
 import { Producer } from "@/types/producer";
