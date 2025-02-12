@@ -1,12 +1,12 @@
 
 export type Producer = {
-  id: number;
+  id: string;
   name: string;
+  email: string;
+  producer_code: string;
   status: string;
-  clients: number;
-  revenue: number;
-  email?: string;
-  producerCode?: string;
-  needsPasswordChange?: boolean;
-  needsMT5Setup?: boolean;
+  needs_password_change: boolean;
+  needs_mt5_setup: boolean;
+  created_at: string;
+  updated_at: string;
 };

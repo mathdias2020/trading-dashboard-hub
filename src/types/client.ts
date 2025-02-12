@@ -1,21 +1,20 @@
 
 export type Client = {
-  id: number;
+  id: string;
+  producer_id: string;
   name: string;
-  accountNumber: string;
-  monthlyResult: number;
-  status: "Ativo" | "Inativo" | "Aguardando Pagamento" | "Em revisão" | "Conectado";
-  producerId: number;
-  email?: string;
-  mt5Account?: string;
-  mt5Password?: string;
-  contracts?: number;
-  maxContracts?: number;
-  algoTrading?: boolean;
-  producerCode?: string;
-  needsPasswordChange?: boolean;
-  subscriptionDate?: string;
-  mt5Balance?: number;
-  result?: number;
+  email: string;
+  account_number: string;
+  status: string;
+  contracts: number;
+  max_contracts: number;
+  algo_trading: boolean;
+  mt5_account?: string;
+  mt5_password?: string;
+  mt5_balance: number;
+  monthly_result: number;
+  needs_password_change: boolean;
+  subscription_date: string;
+  created_at: string;
+  updated_at: string;
 };
-

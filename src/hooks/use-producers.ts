@@ -1,33 +1,58 @@
 
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Producer } from "@/types/producer";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useProducers = () => {
-  const [producers, setProducers] = useState<Producer[]>([
-    { id: 1, name: "João Silva", status: "Ativo", clients: 15, revenue: 25000, email: "joao@example.com", producerCode: "PROD001" },
-    { id: 2, name: "Maria Santos", status: "Pendente", clients: 8, revenue: 12000, email: "maria@example.com", producerCode: "PROD002" },
-    { id: 3, name: "Pedro Oliveira", status: "Inativo", clients: 0, revenue: 0, email: "pedro@example.com", producerCode: "PROD003" },
-  ]);
   const { toast } = useToast();
 
-  const addProducer = (name: string, email: string, producerCode: string) => {
-    const newId = producers.length + 1;
-    const producerToAdd: Producer = {
-      id: newId,
-      name,
-      email,
-      producerCode,
-      status: "Pendente",
-      clients: 0,
-      revenue: 0,
-    };
+  const { data: producers = [], refetch } = useQuery({
+    queryKey: ["producers"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("producers")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    setProducers([...producers, producerToAdd]);
-    toast({
-      title: "Produtor adicionado",
-      description: `${name} foi adicionado como produtor`,
-    });
+      if (error) {
+        console.error("Error fetching producers:", error);
+        throw error;
+      }
+
+      return data as Producer[];
+    }
+  });
+
+  const addProducer = async (name: string, email: string, producerCode: string) => {
+    try {
+      const { error } = await supabase
+        .from("producers")
+        .insert([
+          {
+            name,
+            email,
+            producer_code: producerCode,
+            status: "pending"
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Produtor adicionado",
+        description: `${name} foi adicionado como produtor`,
+      });
+
+      refetch();
+    } catch (error) {
+      console.error("Error adding producer:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível adicionar o produtor",
+        variant: "destructive",
+      });
+    }
   };
 
   return {

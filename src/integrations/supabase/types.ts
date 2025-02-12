@@ -9,7 +9,142 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          account_number: string
+          algo_trading: boolean | null
+          contracts: number | null
+          created_at: string | null
+          email: string
+          id: string
+          max_contracts: number | null
+          monthly_result: number | null
+          mt5_account: string | null
+          mt5_balance: number | null
+          mt5_password: string | null
+          name: string
+          needs_password_change: boolean | null
+          producer_id: string
+          status: string
+          subscription_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          account_number: string
+          algo_trading?: boolean | null
+          contracts?: number | null
+          created_at?: string | null
+          email: string
+          id?: string
+          max_contracts?: number | null
+          monthly_result?: number | null
+          mt5_account?: string | null
+          mt5_balance?: number | null
+          mt5_password?: string | null
+          name: string
+          needs_password_change?: boolean | null
+          producer_id: string
+          status?: string
+          subscription_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          account_number?: string
+          algo_trading?: boolean | null
+          contracts?: number | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          max_contracts?: number | null
+          monthly_result?: number | null
+          mt5_account?: string | null
+          mt5_balance?: number | null
+          mt5_password?: string | null
+          name?: string
+          needs_password_change?: boolean | null
+          producer_id?: string
+          status?: string
+          subscription_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      producers: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+          needs_mt5_setup: boolean | null
+          needs_password_change: boolean | null
+          producer_code: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          name: string
+          needs_mt5_setup?: boolean | null
+          needs_password_change?: boolean | null
+          producer_code: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+          needs_mt5_setup?: boolean | null
+          needs_password_change?: boolean | null
+          producer_code?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      trades: {
+        Row: {
+          client_id: string
+          created_at: string | null
+          date: string
+          id: string
+          result: number
+        }
+        Insert: {
+          client_id: string
+          created_at?: string | null
+          date: string
+          id?: string
+          result: number
+        }
+        Update: {
+          client_id?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          result?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trades_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
