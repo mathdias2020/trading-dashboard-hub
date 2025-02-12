@@ -1,31 +1,31 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { addDays, isWithinInterval, parseISO, format, isToday, isThisMonth, subDays } from "date-fns";
-import { Button } from "@/components/ui/button";
+import { format, isToday, isThisMonth } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DateRange } from "react-day-picker";
 import DashboardStats from "@/components/client/overview/DashboardStats";
 import OperationsTable from "@/components/client/overview/OperationsTable";
 import AccountSettings from "@/components/client/settings/AccountSettings";
 import DashboardHeader from "@/components/client/overview/DashboardHeader";
+import ClientStatusActions from "@/components/client/overview/ClientStatusActions";
+import { useDateRange } from "@/hooks/use-date-range";
+import { useClientData } from "@/contexts/ClientDataContext";
 import { useTrades } from "@/hooks/use-trades";
 
 const ClientDashboard = () => {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: subDays(new Date(), 7), // Start from 7 days ago
-    to: new Date() // End today
-  });
+  const { date, setDate } = useDateRange();
   const [activeTab, setActiveTab] = useState("overview");
   const [formData, setFormData] = useState({
     account: "",
     password: "",
   });
   const { toast } = useToast();
+  const clientData = useClientData();
 
   const { data: tradesData, isLoading: isLoadingTrades } = useTrades(
-    1, // Hardcoded ID for now
+    1,
     date?.from ? format(date.from, "yyyy-MM-dd") : "2024-01-01",
     date?.to ? format(date.to, "yyyy-MM-dd") : "2025-02-12"
   );
@@ -33,8 +33,6 @@ const ClientDashboard = () => {
   const calculateBalances = () => {
     if (!tradesData?.trades) return { dailyBalance: 0, periodBalance: 0 };
 
-    const today = new Date();
-    
     const dailyTrades = tradesData.trades.filter(trade => 
       isToday(new Date(trade.date.replace(".", "-")))
     );
@@ -49,41 +47,11 @@ const ClientDashboard = () => {
 
   const getBalanceTitle = () => {
     if (!date?.from || !date?.to) return "Saldo Mensal";
-
     const isCurrentMonth = isThisMonth(date.from) && isThisMonth(date.to);
     return isCurrentMonth ? "Saldo Mensal" : "Saldo do Período";
   };
 
   const { dailyBalance, periodBalance } = calculateBalances();
-
-  const clientData = {
-    name: "Ana Costa",
-    status: "Aguardando Pagamento",
-    producer: "João Silva",
-    lastOperation: "2024-02-09",
-    producerContractLimit: 10,
-    algoTrading: true,
-    mt5Balance: 15000,
-    isApprovedByAdmin: true,
-    paymentPending: true,
-    paymentReceived: false,
-    accountConfigured: false,
-  };
-
-  const formatTradesForChart = () => {
-    if (!tradesData?.trades) return [];
-
-    const tradesByDate = tradesData.trades.reduce((acc: { [key: string]: number }, trade) => {
-      const date = trade.date.split(" ")[0];
-      acc[date] = (acc[date] || 0) + trade.result;
-      return acc;
-    }, {});
-
-    return Object.entries(tradesByDate).map(([date, value]) => ({
-      date,
-      value
-    }));
-  };
 
   const handlePayment = () => {
     toast({
@@ -106,63 +74,21 @@ const ClientDashboard = () => {
       description: "Suas informações foram enviadas para revisão. Em breve um administrador irá analisá-las.",
     });
     clientData.status = "Em revisão";
-    clientData.accountConfigured = true;
   };
 
-  const capitalCurveData = [
-    { date: "2024-02-04", value: -50 },
-    { date: "2024-02-05", value: 100 },
-    { date: "2024-02-06", value: 150 },
-    { date: "2024-02-06", value: 120 },
-    { date: "2024-02-06", value: 280 },
-    { date: "2024-02-06", value: 320 },
-    { date: "2024-02-07", value: 400 },
-  ];
+  const formatTradesForChart = () => {
+    if (!tradesData?.trades) return [];
 
-  const getFilteredCapitalData = () => {
-    if (!date?.from || !date?.to) return capitalCurveData;
-    
-    return capitalCurveData.filter((item) => {
-      const itemDate = parseISO(item.date);
-      return isWithinInterval(itemDate, { 
-        start: date.from, 
-        end: date.to 
-      });
-    });
-  };
+    const tradesByDate = tradesData.trades.reduce((acc: { [key: string]: number }, trade) => {
+      const date = trade.date.split(" ")[0];
+      acc[date] = (acc[date] || 0) + trade.result;
+      return acc;
+    }, {});
 
-  const renderActionButton = () => {
-    if (clientData.status === "Em revisão") {
-      return (
-        <div className="flex justify-center">
-          <Button variant="outline" className="w-fit" disabled>
-            Informações em revisão
-          </Button>
-        </div>
-      );
-    }
-
-    if (!clientData.accountConfigured && clientData.paymentReceived) {
-      return (
-        <div className="flex justify-center">
-          <Button variant="outline" className="w-fit" onClick={() => setActiveTab("settings")}>
-            Adicione as informações da conta
-          </Button>
-        </div>
-      );
-    }
-
-    if (clientData.paymentPending && !clientData.paymentReceived) {
-      return (
-        <div className="flex justify-center">
-          <Button onClick={handlePayment} className="w-fit">
-            Pagar mensalidade
-          </Button>
-        </div>
-      );
-    }
-
-    return null;
+    return Object.entries(tradesByDate).map(([date, value]) => ({
+      date,
+      value
+    }));
   };
 
   return (
@@ -173,7 +99,14 @@ const ClientDashboard = () => {
         clientName={clientData.name}
       />
 
-      {renderActionButton()}
+      <ClientStatusActions
+        status={clientData.status}
+        accountConfigured={clientData.accountConfigured}
+        paymentReceived={clientData.paymentReceived}
+        paymentPending={clientData.paymentPending}
+        onPayment={handlePayment}
+        onConfigureAccount={() => setActiveTab("settings")}
+      />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
