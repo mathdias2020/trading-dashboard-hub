@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { format, isToday, isThisMonth } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +11,7 @@ import DashboardHeader from "@/components/client/overview/DashboardHeader";
 import ClientStatusActions from "@/components/client/overview/ClientStatusActions";
 import { useDateRange } from "@/hooks/use-date-range";
 import { useClientData } from "@/contexts/ClientDataContext";
-import { useTrades } from "@/hooks/use-trades";
+import { useDashboardTrades } from "@/hooks/use-dashboard-trades";
 
 const ClientDashboard = () => {
   const { date, setDate } = useDateRange();
@@ -23,35 +22,7 @@ const ClientDashboard = () => {
   });
   const { toast } = useToast();
   const clientData = useClientData();
-
-  const { data: tradesData, isLoading: isLoadingTrades } = useTrades(
-    1,
-    date?.from ? format(date.from, "yyyy-MM-dd") : "2024-01-01",
-    date?.to ? format(date.to, "yyyy-MM-dd") : "2025-02-12"
-  );
-
-  const calculateBalances = () => {
-    if (!tradesData?.trades) return { dailyBalance: 0, periodBalance: 0 };
-
-    const dailyTrades = tradesData.trades.filter(trade => 
-      isToday(new Date(trade.date.replace(".", "-")))
-    );
-
-    const periodTrades = tradesData.trades;
-
-    const dailyBalance = dailyTrades.reduce((sum, trade) => sum + trade.result, 0);
-    const periodBalance = periodTrades.reduce((sum, trade) => sum + trade.result, 0);
-
-    return { dailyBalance, periodBalance };
-  };
-
-  const getBalanceTitle = () => {
-    if (!date?.from || !date?.to) return "Saldo Mensal";
-    const isCurrentMonth = isThisMonth(date.from) && isThisMonth(date.to);
-    return isCurrentMonth ? "Saldo Mensal" : "Saldo do Período";
-  };
-
-  const { dailyBalance, periodBalance } = calculateBalances();
+  const { trades, isLoading, balances, balanceTitle, chartData } = useDashboardTrades(date);
 
   const handlePayment = () => {
     toast({
@@ -74,21 +45,6 @@ const ClientDashboard = () => {
       description: "Suas informações foram enviadas para revisão. Em breve um administrador irá analisá-las.",
     });
     clientData.status = "Em revisão";
-  };
-
-  const formatTradesForChart = () => {
-    if (!tradesData?.trades) return [];
-
-    const tradesByDate = tradesData.trades.reduce((acc: { [key: string]: number }, trade) => {
-      const date = trade.date.split(" ")[0];
-      acc[date] = (acc[date] || 0) + trade.result;
-      return acc;
-    }, {});
-
-    return Object.entries(tradesByDate).map(([date, value]) => ({
-      date,
-      value
-    }));
   };
 
   return (
@@ -116,21 +72,21 @@ const ClientDashboard = () => {
 
         <TabsContent value="overview">
           <DashboardStats 
-            dailyBalance={dailyBalance}
-            balance={periodBalance}
-            balanceTitle={getBalanceTitle()}
+            dailyBalance={balances.dailyBalance}
+            balance={balances.periodBalance}
+            balanceTitle={balanceTitle}
             status={clientData.status}
           />
 
           <div className="mt-8 mb-6">
-            <CapitalCurveChart data={formatTradesForChart()} />
+            <CapitalCurveChart data={chartData} />
           </div>
 
           <Card className="p-4">
             <h2 className="text-xl font-semibold mb-4">Últimas Operações</h2>
             <OperationsTable 
-              trades={tradesData?.trades || []} 
-              isLoading={isLoadingTrades} 
+              trades={trades} 
+              isLoading={isLoading} 
             />
           </Card>
         </TabsContent>
