@@ -96,6 +96,30 @@ export const useTasks = () => {
     });
   };
 
+  const addTaskType = (name: string) => {
+    const newTaskType: TaskType = {
+      id: taskTypes.length + 1,
+      name,
+    };
+    setTaskTypes([...taskTypes, newTaskType]);
+    toast({
+      title: "Tipo de tarefa adicionado",
+      description: "O novo tipo de tarefa foi criado com sucesso",
+    });
+  };
+
+  const addTaskSector = (name: string) => {
+    const newTaskSector: TaskSector = {
+      id: taskSectors.length + 1,
+      name,
+    };
+    setTaskSectors([...taskSectors, newTaskSector]);
+    toast({
+      title: "Setor adicionado",
+      description: "O novo setor foi criado com sucesso",
+    });
+  };
+
   return {
     tasks,
     taskTypes,
@@ -105,5 +129,7 @@ export const useTasks = () => {
     completeTask,
     addMT5Error,
     markTaskAsResolved,
+    addTaskType,
+    addTaskSector,
   };
 };
