@@ -11,6 +11,10 @@ interface OverviewProps {
 }
 
 const Overview = ({ producers, onViewProducers, onViewTasks, onViewSectors }: OverviewProps) => {
+  const totalActiveProducers = producers.filter(p => p.status === "Ativo").length;
+  const totalClients = producers.reduce((acc, p) => acc + p.clients_count, 0);
+  const totalRevenue = producers.reduce((acc, p) => acc + p.revenue, 0);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -28,15 +32,15 @@ const Overview = ({ producers, onViewProducers, onViewTasks, onViewSectors }: Ov
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="p-4">
           <h3 className="font-semibold">Produtores Ativos</h3>
-          <p className="text-2xl">{producers.filter(p => p.status === "Ativo").length}</p>
+          <p className="text-2xl">{totalActiveProducers}</p>
         </Card>
         <Card className="p-4">
           <h3 className="font-semibold">Total de Clientes</h3>
-          <p className="text-2xl">{producers.reduce((acc, p) => acc + p.clients, 0)}</p>
+          <p className="text-2xl">{totalClients}</p>
         </Card>
         <Card className="p-4">
           <h3 className="font-semibold">Receita Total</h3>
-          <p className="text-2xl">R$ {producers.reduce((acc, p) => acc + p.revenue, 0).toLocaleString()}</p>
+          <p className="text-2xl">R$ {totalRevenue.toLocaleString()}</p>
         </Card>
       </div>
     </div>

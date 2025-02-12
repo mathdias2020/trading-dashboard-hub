@@ -79,6 +79,7 @@ export type Database = {
       }
       producers: {
         Row: {
+          clients_count: number | null
           created_at: string | null
           email: string
           id: string
@@ -86,10 +87,12 @@ export type Database = {
           needs_mt5_setup: boolean | null
           needs_password_change: boolean | null
           producer_code: string
+          revenue: number | null
           status: string
           updated_at: string | null
         }
         Insert: {
+          clients_count?: number | null
           created_at?: string | null
           email: string
           id?: string
@@ -97,10 +100,12 @@ export type Database = {
           needs_mt5_setup?: boolean | null
           needs_password_change?: boolean | null
           producer_code: string
+          revenue?: number | null
           status?: string
           updated_at?: string | null
         }
         Update: {
+          clients_count?: number | null
           created_at?: string | null
           email?: string
           id?: string
@@ -108,6 +113,7 @@ export type Database = {
           needs_mt5_setup?: boolean | null
           needs_password_change?: boolean | null
           producer_code?: string
+          revenue?: number | null
           status?: string
           updated_at?: string | null
         }
@@ -119,21 +125,33 @@ export type Database = {
           created_at: string | null
           date: string
           id: string
+          instrument: string
+          producer_id: string | null
           result: number
+          status: string | null
+          type: string
         }
         Insert: {
           client_id: string
           created_at?: string | null
           date: string
           id?: string
+          instrument: string
+          producer_id?: string | null
           result: number
+          status?: string | null
+          type: string
         }
         Update: {
           client_id?: string
           created_at?: string | null
           date?: string
           id?: string
+          instrument?: string
+          producer_id?: string | null
           result?: number
+          status?: string | null
+          type?: string
         }
         Relationships: [
           {
@@ -141,6 +159,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trades_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
             referencedColumns: ["id"]
           },
         ]

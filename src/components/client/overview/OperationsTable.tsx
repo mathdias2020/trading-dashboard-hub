@@ -6,7 +6,9 @@ interface Trade {
   id: string;
   date: string;
   result: number;
-  accountId: number;
+  instrument: string;
+  type: string;
+  status: string;
 }
 
 interface OperationsTableProps {
@@ -31,16 +33,26 @@ const OperationsTable = ({ trades, isLoading }: OperationsTableProps) => {
         <thead>
           <tr className="border-b">
             <th className="text-left p-2">Data</th>
-            <th className="text-left p-2">ID</th>
-            <th className="text-left p-2">Resultado</th>
+            <th className="text-left p-2">Instrumento</th>
+            <th className="text-left p-2">Tipo</th>
+            <th className="text-left p-2">Status</th>
+            <th className="text-right p-2">Resultado</th>
           </tr>
         </thead>
         <tbody>
           {trades.map((trade) => (
             <tr key={trade.id} className="border-b">
               <td className="p-2">{format(new Date(trade.date.replace(".", "-")), "dd/MM/yyyy")}</td>
-              <td className="p-2">{trade.id}</td>
+              <td className="p-2">{trade.instrument}</td>
+              <td className="p-2">{trade.type}</td>
               <td className="p-2">
+                <span className={`px-2 py-1 rounded-full text-xs ${
+                  trade.status === "completed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                }`}>
+                  {trade.status === "completed" ? "Concluído" : "Pendente"}
+                </span>
+              </td>
+              <td className="p-2 text-right">
                 <span className={trade.result > 0 ? "text-green-600" : "text-red-600"}>
                   R$ {trade.result.toLocaleString()}
                 </span>
@@ -54,3 +66,4 @@ const OperationsTable = ({ trades, isLoading }: OperationsTableProps) => {
 };
 
 export default OperationsTable;
+

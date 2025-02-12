@@ -9,4 +9,7 @@ export type Producer = {
   needs_mt5_setup: boolean;
   created_at: string;
   updated_at: string;
+  revenue: number;
+  clients_count: number;
 };
+

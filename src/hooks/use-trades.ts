@@ -7,6 +7,10 @@ interface Trade {
   date: string;
   result: number;
   client_id: string;
+  producer_id: string;
+  instrument: string;
+  type: string;
+  status: string;
 }
 
 const fetchTrades = async (clientId: string, dateFrom: string, dateTo: string) => {
@@ -45,3 +49,4 @@ export const useTrades = (clientId: string, dateFrom: string, dateTo: string) =>
     refetchOnWindowFocus: false,
   });
 };
+
