@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { format, isToday, isThisMonth } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { useTrades } from '@/hooks/use-trades';
+import { useToast } from '@/hooks/use-toast';
 
 interface TradeBalance {
   dailyBalance: number;
@@ -15,11 +16,21 @@ interface ChartDataPoint {
 }
 
 export const useDashboardTrades = (date: DateRange | undefined) => {
+  const { toast } = useToast();
   const { data: tradesData, isLoading } = useTrades(
     1,
     date?.from ? format(date.from, "yyyy-MM-dd") : "2024-01-01",
     date?.to ? format(date.to, "yyyy-MM-dd") : "2025-02-12"
   );
+
+  useMemo(() => {
+    if (!isLoading && tradesData?.trades && tradesData.trades.length === 0) {
+      toast({
+        title: "Sem dados para o período",
+        description: "Tente selecionar um período diferente"
+      });
+    }
+  }, [tradesData?.trades, isLoading, toast]);
 
   const balances = useMemo((): TradeBalance => {
     if (!tradesData?.trades) return { dailyBalance: 0, periodBalance: 0 };
