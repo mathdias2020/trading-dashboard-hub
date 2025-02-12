@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { addDays, isWithinInterval, parseISO, format } from "date-fns";
+import { addDays, isWithinInterval, parseISO, format, isToday, isThisMonth } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
@@ -30,13 +30,37 @@ const ClientDashboard = () => {
     date?.to ? format(date.to, "yyyy-MM-dd") : "2025-02-12"
   );
 
+  const calculateBalances = () => {
+    if (!tradesData?.trades) return { dailyBalance: 0, periodBalance: 0 };
+
+    const today = new Date();
+    
+    const dailyTrades = tradesData.trades.filter(trade => 
+      isToday(new Date(trade.date.replace(".", "-")))
+    );
+
+    const periodTrades = tradesData.trades;
+
+    const dailyBalance = dailyTrades.reduce((sum, trade) => sum + trade.result, 0);
+    const periodBalance = periodTrades.reduce((sum, trade) => sum + trade.result, 0);
+
+    return { dailyBalance, periodBalance };
+  };
+
+  const getBalanceTitle = () => {
+    if (!date?.from || !date?.to) return "Saldo Mensal";
+
+    const isCurrentMonth = isThisMonth(date.from) && isThisMonth(date.to);
+    return isCurrentMonth ? "Saldo Mensal" : "Saldo do Período";
+  };
+
+  const { dailyBalance, periodBalance } = calculateBalances();
+
   const clientData = {
     name: "Ana Costa",
     status: "Aguardando Pagamento",
     producer: "João Silva",
     lastOperation: "2024-02-09",
-    dailyBalance: 500,
-    monthlyBalance: 1200,
     producerContractLimit: 10,
     algoTrading: true,
     mt5Balance: 15000,
@@ -46,11 +70,20 @@ const ClientDashboard = () => {
     accountConfigured: false,
   };
 
-  const operations = [
-    { id: 1, date: "2024-02-09", type: "Compra", symbol: "PETR4", result: 500 },
-    { id: 2, date: "2024-02-08", type: "Venda", symbol: "VALE3", result: -200 },
-    { id: 3, date: "2024-02-07", type: "Compra", symbol: "ITUB4", result: 900 },
-  ];
+  const formatTradesForChart = () => {
+    if (!tradesData?.trades) return [];
+
+    const tradesByDate = tradesData.trades.reduce((acc: { [key: string]: number }, trade) => {
+      const date = trade.date.split(" ")[0];
+      acc[date] = (acc[date] || 0) + trade.result;
+      return acc;
+    }, {});
+
+    return Object.entries(tradesByDate).map(([date, value]) => ({
+      date,
+      value
+    }));
+  };
 
   const handlePayment = () => {
     toast({
@@ -150,13 +183,14 @@ const ClientDashboard = () => {
 
         <TabsContent value="overview">
           <DashboardStats 
-            dailyBalance={clientData.dailyBalance}
-            monthlyBalance={clientData.monthlyBalance}
+            dailyBalance={dailyBalance}
+            balance={periodBalance}
+            balanceTitle={getBalanceTitle()}
             status={clientData.status}
           />
 
           <div className="mt-8 mb-6">
-            <CapitalCurveChart data={getFilteredCapitalData()} />
+            <CapitalCurveChart data={formatTradesForChart()} />
           </div>
 
           <Card className="p-4">

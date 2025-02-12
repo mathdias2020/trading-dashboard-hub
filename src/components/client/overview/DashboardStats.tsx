@@ -3,11 +3,12 @@ import { Card } from "@/components/ui/card";
 
 interface DashboardStatsProps {
   dailyBalance: number;
-  monthlyBalance: number;
+  balance: number;
+  balanceTitle: string;
   status: string;
 }
 
-const DashboardStats = ({ dailyBalance, monthlyBalance, status }: DashboardStatsProps) => {
+const DashboardStats = ({ dailyBalance, balance, balanceTitle, status }: DashboardStatsProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <Card className="p-4">
@@ -15,8 +16,8 @@ const DashboardStats = ({ dailyBalance, monthlyBalance, status }: DashboardStats
         <p className="text-2xl">R$ {dailyBalance.toLocaleString()}</p>
       </Card>
       <Card className="p-4">
-        <h3 className="font-semibold">Saldo Mensal</h3>
-        <p className="text-2xl">R$ {monthlyBalance.toLocaleString()}</p>
+        <h3 className="font-semibold">{balanceTitle}</h3>
+        <p className="text-2xl">R$ {balance.toLocaleString()}</p>
       </Card>
       <Card className="p-4">
         <h3 className="font-semibold">Status</h3>
