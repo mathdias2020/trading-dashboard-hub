@@ -48,7 +48,7 @@ const SectorDashboard = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">
-          Painel Administrativo - {sector}
+          Painel Administrativo - Suporte técnico
         </h1>
         <AddTaskDialog
           isOpen={isAddTaskOpen}
@@ -106,4 +106,3 @@ const SectorDashboard = () => {
 };
 
 export default SectorDashboard;
-
