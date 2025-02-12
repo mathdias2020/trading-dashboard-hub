@@ -35,14 +35,15 @@ const fetchTrades = async (id: number, dateFrom: string, dateTo: string) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: 'cors', // Add CORS mode explicitly
+        mode: 'cors',
       }
     );
 
     if (!response.ok) {
       console.error('HTTP Error Response:', {
         status: response.status,
-        statusText: response.statusText
+        statusText: response.statusText,
+        url: response.url
       });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -52,8 +53,7 @@ const fetchTrades = async (id: number, dateFrom: string, dateTo: string) => {
     return data as TradesResponse;
   } catch (error) {
     console.error('Fetch error:', error);
-    // Return empty data instead of throwing
-    return { trades: [], message: "Failed to fetch data" };
+    throw error; // Let react-query handle the error retry
   }
 };
 
@@ -67,3 +67,4 @@ export const useTrades = (id: number, dateFrom: string, dateTo: string) => {
     refetchOnWindowFocus: false,
   });
 };
+
