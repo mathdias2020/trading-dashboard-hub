@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Task } from "@/types/task";
 import { useTasks } from "@/hooks/use-tasks";
 import { useToast } from "@/hooks/use-toast";
@@ -12,7 +13,7 @@ import { mockClients } from "@/mock/clientData";
 
 const SectorDashboard = () => {
   const { sector } = useParams();
-  const { tasks, completeTask, taskTypes, taskSectors } = useTasks();
+  const { tasks, completeTask, taskTypes, taskSectors, mt5Errors, addMT5Error } = useTasks();
   const { producers } = useProducers();
   const { toast } = useToast();
   const [sectorTasks, setSectorTasks] = useState<Task[]>([]);
@@ -27,6 +28,10 @@ const SectorDashboard = () => {
 
   const handleCompleteTask = (taskId: number) => {
     completeTask(taskId);
+  };
+
+  const handleMT5Error = (taskId: number, errorId: number) => {
+    addMT5Error(taskId, errorId);
   };
 
   const handleAddTask = (task: {
@@ -87,15 +92,38 @@ const SectorDashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     Criada em: {new Date(task.createdAt).toLocaleDateString()}
                   </p>
+                  {task.mt5Error && (
+                    <p className="text-sm text-red-500">
+                      Erro: {task.mt5Error.description}
+                    </p>
+                  )}
                 </div>
-                {task.status === "pending" && (
-                  <Button
-                    variant="outline"
-                    onClick={() => handleCompleteTask(task.id)}
-                  >
-                    Concluir
-                  </Button>
-                )}
+                <div className="space-y-2">
+                  {task.status === "pending" && task.type === "Configuração MT5" && (
+                    <div className="flex flex-col gap-2">
+                      <Select onValueChange={(value) => handleMT5Error(task.id, Number(value))}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Selecionar erro" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mt5Errors.map((error) => (
+                            <SelectItem key={error.id} value={error.id.toString()}>
+                              {error.description}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" onClick={() => handleCompleteTask(task.id)}>
+                        Aprovar
+                      </Button>
+                    </div>
+                  )}
+                  {task.status === "client_resolution" && (
+                    <Button variant="outline" onClick={() => handleCompleteTask(task.id)}>
+                      Verificar Resolução
+                    </Button>
+                  )}
+                </div>
               </div>
             </Card>
           ))
