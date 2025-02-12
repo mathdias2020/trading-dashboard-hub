@@ -9,15 +9,20 @@ interface DashboardStatsProps {
 }
 
 const DashboardStats = ({ dailyBalance, balance, balanceTitle, status }: DashboardStatsProps) => {
+  // Ensure we have valid numbers to format
+  const formatNumber = (value: number) => {
+    return (value || 0).toLocaleString();
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <Card className="p-4">
         <h3 className="font-semibold">Saldo Diário</h3>
-        <p className="text-2xl">R$ {dailyBalance.toLocaleString()}</p>
+        <p className="text-2xl">R$ {formatNumber(dailyBalance)}</p>
       </Card>
       <Card className="p-4">
         <h3 className="font-semibold">{balanceTitle}</h3>
-        <p className="text-2xl">R$ {balance.toLocaleString()}</p>
+        <p className="text-2xl">R$ {formatNumber(balance)}</p>
       </Card>
       <Card className="p-4">
         <h3 className="font-semibold">Status</h3>
