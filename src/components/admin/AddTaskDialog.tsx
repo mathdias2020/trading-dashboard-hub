@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import { TaskType, TaskSector } from "@/types/task";
 import { Producer } from "@/types/producer";
 import { Client } from "@/types/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddTaskDialogProps {
   isOpen: boolean;
@@ -41,6 +42,8 @@ const AddTaskDialog = ({
     clientId: "",
     description: "",
   });
+
+  const { toast } = useToast();
 
   const handleSubmit = () => {
     if (!formData.type || !formData.sector || !formData.description) {

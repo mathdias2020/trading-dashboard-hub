@@ -6,17 +6,19 @@ import { Producer } from "@/types/producer";
 interface OverviewProps {
   producers: Producer[];
   onViewProducers: () => void;
-  onViewNotifications: () => void;
+  onViewTasks: () => void;
+  onViewSectors: () => void;
 }
 
-const Overview = ({ producers, onViewProducers, onViewNotifications }: OverviewProps) => {
+const Overview = ({ producers, onViewProducers, onViewTasks, onViewSectors }: OverviewProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Painel Administrativo</h1>
         <div className="space-x-4">
           <Button onClick={onViewProducers}>Produtores</Button>
-          <Button onClick={onViewNotifications}>Avisos</Button>
+          <Button onClick={onViewTasks}>Tarefas</Button>
+          <Button onClick={onViewSectors}>Setores</Button>
           <Button variant="outline" onClick={() => window.location.href = "/admin/dev"}>
             Dev Settings
           </Button>
@@ -42,3 +44,4 @@ const Overview = ({ producers, onViewProducers, onViewNotifications }: OverviewP
 };
 
 export default Overview;
+
