@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { addDays, isWithinInterval, parseISO, format, isToday, isThisMonth } from "date-fns";
+import { addDays, isWithinInterval, parseISO, format, isToday, isThisMonth, subDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
@@ -14,8 +14,8 @@ import { useTrades } from "@/hooks/use-trades";
 
 const ClientDashboard = () => {
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 7)
+    from: subDays(new Date(), 7), // Start from 7 days ago
+    to: new Date() // End today
   });
   const [activeTab, setActiveTab] = useState("overview");
   const [formData, setFormData] = useState({

@@ -20,6 +20,13 @@ const fetchTrades = async (id: number, dateFrom: string, dateTo: string) => {
     dateTo,
   });
 
+  console.log('Fetching trades with params:', {
+    id,
+    dateFrom,
+    dateTo,
+    url: `https://dashboard-api-two.vercel.app/trades?${params}`
+  });
+
   try {
     const response = await fetch(
       `https://dashboard-api-two.vercel.app/trades?${params}`,
@@ -28,14 +35,20 @@ const fetchTrades = async (id: number, dateFrom: string, dateTo: string) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        mode: 'cors', // Add CORS mode explicitly
       }
     );
 
     if (!response.ok) {
+      console.error('HTTP Error Response:', {
+        status: response.status,
+        statusText: response.statusText
+      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('Received trade data:', data);
     return data as TradesResponse;
   } catch (error) {
     console.error('Fetch error:', error);
