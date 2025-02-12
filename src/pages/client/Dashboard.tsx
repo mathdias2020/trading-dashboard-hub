@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { addDays, isWithinInterval, parseISO } from "date-fns";
+import { addDays, isWithinInterval, parseISO, format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import CapitalCurveChart from "@/components/CapitalCurveChart";
@@ -11,6 +10,7 @@ import DashboardStats from "@/components/client/overview/DashboardStats";
 import OperationsTable from "@/components/client/overview/OperationsTable";
 import AccountSettings from "@/components/client/settings/AccountSettings";
 import DashboardHeader from "@/components/client/overview/DashboardHeader";
+import { useTrades } from "@/hooks/use-trades";
 
 const ClientDashboard = () => {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -23,6 +23,12 @@ const ClientDashboard = () => {
     password: "",
   });
   const { toast } = useToast();
+
+  const { data: tradesData, isLoading: isLoadingTrades } = useTrades(
+    1, // Hardcoded ID for now
+    date?.from ? format(date.from, "yyyy-MM-dd") : "2024-01-01",
+    date?.to ? format(date.to, "yyyy-MM-dd") : "2025-02-12"
+  );
 
   const clientData = {
     name: "Ana Costa",
@@ -155,7 +161,10 @@ const ClientDashboard = () => {
 
           <Card className="p-4">
             <h2 className="text-xl font-semibold mb-4">Últimas Operações</h2>
-            <OperationsTable operations={operations} />
+            <OperationsTable 
+              trades={tradesData?.trades || []} 
+              isLoading={isLoadingTrades} 
+            />
           </Card>
         </TabsContent>
 
@@ -176,4 +185,3 @@ const ClientDashboard = () => {
 };
 
 export default ClientDashboard;
-
