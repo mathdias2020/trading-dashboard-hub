@@ -2,13 +2,10 @@
 import Overview from "@/components/admin/Overview";
 import ProducerTable from "@/components/admin/ProducerTable";
 import { Producer } from "@/types/producer";
-import AddTaskDialog from "@/components/admin/AddTaskDialog";
 import AddProducerDialog from "@/components/admin/AddProducerDialog";
 
 interface DashboardContentProps {
   producers: Producer[];
-  isAddTaskOpen: boolean;
-  setIsAddTaskOpen: (open: boolean) => void;
   isAddProducerOpen: boolean;
   setIsAddProducerOpen: (open: boolean) => void;
   newProducer: {
@@ -26,8 +23,6 @@ interface DashboardContentProps {
 
 const DashboardContent = ({
   producers,
-  isAddTaskOpen,
-  setIsAddTaskOpen,
   isAddProducerOpen,
   setIsAddProducerOpen,
   newProducer,
@@ -49,15 +44,6 @@ const DashboardContent = ({
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Lista de Produtores</h2>
         <div className="space-x-4">
-          <AddTaskDialog
-            isOpen={isAddTaskOpen}
-            onOpenChange={setIsAddTaskOpen}
-            taskTypes={[]}
-            taskSectors={[]}
-            producers={producers}
-            clients={[]}
-            onAddTask={() => {}}
-          />
           <AddProducerDialog
             isOpen={isAddProducerOpen}
             onOpenChange={setIsAddProducerOpen}
@@ -74,3 +60,4 @@ const DashboardContent = ({
 };
 
 export default DashboardContent;
+

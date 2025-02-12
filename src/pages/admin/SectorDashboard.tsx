@@ -6,15 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Task } from "@/types/task";
 import { useTasks } from "@/hooks/use-tasks";
 import { useToast } from "@/hooks/use-toast";
+import { useProducers } from "@/hooks/use-producers";
+import AddTaskDialog from "@/components/admin/AddTaskDialog";
+import { mockClients } from "@/mock/clientData";
 
 const SectorDashboard = () => {
   const { sector } = useParams();
-  const { tasks, completeTask } = useTasks();
+  const { tasks, completeTask, taskTypes, taskSectors } = useTasks();
+  const { producers } = useProducers();
   const { toast } = useToast();
   const [sectorTasks, setSectorTasks] = useState<Task[]>([]);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
   useEffect(() => {
-    // Filter tasks by sector
     const filteredTasks = tasks.filter(
       (task) => task.sector.toLowerCase() === sector?.toLowerCase()
     );
@@ -25,12 +29,36 @@ const SectorDashboard = () => {
     completeTask(taskId);
   };
 
+  const handleAddTask = (task: {
+    type: string;
+    sector: string;
+    producerId?: number;
+    clientId?: number;
+    description: string;
+  }) => {
+    // A lógica de adicionar tarefa será executada aqui através do hook useTasks
+    toast({
+      title: "Tarefa adicionada",
+      description: "A tarefa foi criada com sucesso",
+    });
+    setIsAddTaskOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">
           Painel Administrativo - {sector}
         </h1>
+        <AddTaskDialog
+          isOpen={isAddTaskOpen}
+          onOpenChange={setIsAddTaskOpen}
+          taskTypes={taskTypes}
+          taskSectors={taskSectors}
+          producers={producers}
+          clients={mockClients}
+          onAddTask={handleAddTask}
+        />
       </div>
 
       <div className="space-y-4">
@@ -78,3 +106,4 @@ const SectorDashboard = () => {
 };
 
 export default SectorDashboard;
+

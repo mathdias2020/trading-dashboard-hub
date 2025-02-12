@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useProducers } from "@/hooks/use-producers";
@@ -17,7 +18,6 @@ const AdminDashboard = () => {
   const [currentView, setCurrentView] = useState<"overview" | "producers" | "tasks" | "sectors">("overview");
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isAddProducerOpen, setIsAddProducerOpen] = useState(false);
-  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [newProducer, setNewProducer] = useState({
     name: "",
     email: "",
@@ -89,8 +89,6 @@ const AdminDashboard = () => {
     return (
       <DashboardContent
         producers={producers}
-        isAddTaskOpen={isAddTaskOpen}
-        setIsAddTaskOpen={setIsAddTaskOpen}
         isAddProducerOpen={isAddProducerOpen}
         setIsAddProducerOpen={setIsAddProducerOpen}
         newProducer={newProducer}
@@ -152,3 +150,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
