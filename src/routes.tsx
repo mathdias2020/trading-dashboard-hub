@@ -1,9 +1,12 @@
+
 import { createBrowserRouter } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ProducerCode from "./pages/auth/ProducerCode";
 import AdminDashboard from "./pages/admin/Dashboard";
-import SectorDashboard from "./pages/admin/SectorDashboard";
+import TechnicalSupportDashboard from "./pages/admin/TechnicalSupportDashboard";
+import ClientSupportDashboard from "./pages/admin/ClientSupportDashboard";
+import ProducerSupportDashboard from "./pages/admin/ProducerSupportDashboard";
 import AdminDev from "./pages/admin/Dev";
 import ProducerDashboard from "./pages/producer/Dashboard";
 import ProducerSettings from "./pages/producer/Settings";
@@ -32,7 +35,9 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <AdminDashboard /> },
       { path: "dev", element: <AdminDev /> },
-      { path: "sector/:sector", element: <SectorDashboard /> },
+      { path: "technical-support", element: <TechnicalSupportDashboard /> },
+      { path: "client-support", element: <ClientSupportDashboard /> },
+      { path: "producer-support", element: <ProducerSupportDashboard /> },
     ],
   },
   {
