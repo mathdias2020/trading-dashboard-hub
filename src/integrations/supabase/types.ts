@@ -9,6 +9,74 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_activities: {
+        Row: {
+          activity_type: string
+          admin_id: string
+          created_at: string | null
+          description: string
+          id: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          activity_type: string
+          admin_id: string
+          created_at?: string | null
+          description: string
+          id?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          activity_type?: string
+          admin_id?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_activities_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admins: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["admin_role"]
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          name: string
+          role: Database["public"]["Enums"]["admin_role"]
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           account_number: string
@@ -116,6 +184,70 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          assigned_admin_id: string | null
+          category: string
+          client_id: string | null
+          created_at: string | null
+          description: string
+          id: string
+          priority: string
+          producer_id: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_admin_id?: string | null
+          category: string
+          client_id?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          priority?: string
+          producer_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_admin_id?: string | null
+          category?: string
+          client_id?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          priority?: string
+          producer_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_assigned_admin_id_fkey"
+            columns: ["assigned_admin_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "producers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trades: {
         Row: {
           client_id: string
@@ -175,7 +307,11 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      admin_role:
+        | "super_admin"
+        | "technical_support"
+        | "client_support"
+        | "producer_support"
     }
     CompositeTypes: {
       [_ in never]: never
