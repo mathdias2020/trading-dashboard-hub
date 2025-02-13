@@ -23,7 +23,6 @@ export type Database = {
           mt5_balance: number | null
           mt5_password: string | null
           name: string
-          needs_password_change: boolean | null
           producer_id: string
           status: string
           subscription_date: string | null
@@ -42,7 +41,6 @@ export type Database = {
           mt5_balance?: number | null
           mt5_password?: string | null
           name: string
-          needs_password_change?: boolean | null
           producer_id: string
           status?: string
           subscription_date?: string | null
@@ -61,7 +59,6 @@ export type Database = {
           mt5_balance?: number | null
           mt5_password?: string | null
           name?: string
-          needs_password_change?: boolean | null
           producer_id?: string
           status?: string
           subscription_date?: string | null

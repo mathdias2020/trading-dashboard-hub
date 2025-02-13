@@ -13,8 +13,8 @@ export type Client = {
   mt5_password?: string;
   mt5_balance: number;
   monthly_result: number;
-  needs_password_change: boolean;
   subscription_date: string;
   created_at: string;
   updated_at: string;
 };
+
