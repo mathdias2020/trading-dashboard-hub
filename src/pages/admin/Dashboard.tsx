@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useProducers } from "@/hooks/use-producers";
@@ -66,14 +65,13 @@ const AdminDashboard = () => {
     producer_id: string;
   }) => {
     const newClient: Client = {
-      id: String(clients.length + 1), // Convert to string since IDs are strings/UUIDs
+      id: String(clients.length + 1),
       name: clientData.name,
       email: clientData.email,
       account_number: "",
       monthly_result: 0,
       status: "Aguardando Pagamento",
       producer_id: clientData.producer_id,
-      needs_password_change: true,
       subscription_date: new Date().toISOString(),
       contracts: 0,
       max_contracts: 5,

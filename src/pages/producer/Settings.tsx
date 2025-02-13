@@ -20,7 +20,6 @@ const initialClients: Client[] = [
     algo_trading: true,
     mt5_balance: 15000,
     email: "ana@example.com",
-    needs_password_change: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
@@ -37,7 +36,6 @@ const initialClients: Client[] = [
     algo_trading: false,
     mt5_balance: 8000,
     email: "carlos@example.com",
-    needs_password_change: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
@@ -54,7 +52,6 @@ const initialClients: Client[] = [
     algo_trading: true,
     mt5_balance: 5000,
     email: "beatriz@example.com",
-    needs_password_change: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   },
