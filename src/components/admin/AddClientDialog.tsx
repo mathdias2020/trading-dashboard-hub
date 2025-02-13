@@ -13,16 +13,16 @@ interface AddClientDialogProps {
     name: string;
     email: string;
     initialPassword: string;
-    producerId: number;
+    producer_id: string;
   }) => void;
-  producerId: number;
+  producer_id: string;
 }
 
 const AddClientDialog = ({
   isOpen,
   onOpenChange,
   onAddClient,
-  producerId,
+  producer_id,
 }: AddClientDialogProps) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
@@ -43,7 +43,7 @@ const AddClientDialog = ({
 
     onAddClient({
       ...formData,
-      producerId,
+      producer_id,
     });
 
     setFormData({

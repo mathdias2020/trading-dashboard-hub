@@ -63,3 +63,4 @@ const ClientsManagement = ({ selectedProducer, clients: initialClients, onAddCli
 };
 
 export default ClientsManagement;
+
