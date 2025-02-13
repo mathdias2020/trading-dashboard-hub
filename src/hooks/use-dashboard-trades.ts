@@ -1,4 +1,3 @@
-
 import { useMemo, useEffect } from 'react';
 import { format, isToday, isThisMonth, subDays, startOfDay } from 'date-fns';
 import { DateRange } from 'react-day-picker';
@@ -17,11 +16,11 @@ interface ChartDataPoint {
 
 export const useDashboardTrades = (date: DateRange | undefined) => {
   const { toast } = useToast();
-  const defaultStartDate = startOfDay(subDays(new Date(), 30)); // Last 30 days as default
+  const defaultStartDate = startOfDay(subDays(new Date(), 30));
   const defaultEndDate = startOfDay(new Date());
 
   const { data: tradesData, isLoading } = useTrades(
-    1,
+    "1", // Change to string since IDs are strings/UUIDs
     date?.from ? format(startOfDay(date.from), "yyyy-MM-dd") : format(defaultStartDate, "yyyy-MM-dd"),
     date?.to ? format(startOfDay(date.to), "yyyy-MM-dd") : format(defaultEndDate, "yyyy-MM-dd")
   );
@@ -79,4 +78,3 @@ export const useDashboardTrades = (date: DateRange | undefined) => {
     chartData
   };
 };
-

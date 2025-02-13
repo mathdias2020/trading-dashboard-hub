@@ -63,23 +63,24 @@ const AdminDashboard = () => {
     name: string;
     email: string;
     initialPassword: string;
-    producerId: number;
+    producer_id: string;
   }) => {
     const newClient: Client = {
-      id: clients.length + 1,
+      id: String(clients.length + 1), // Convert to string since IDs are strings/UUIDs
       name: clientData.name,
       email: clientData.email,
-      accountNumber: "",
-      monthlyResult: 0,
+      account_number: "",
+      monthly_result: 0,
       status: "Aguardando Pagamento",
-      producerId: clientData.producerId,
-      needsPasswordChange: true,
-      subscriptionDate: new Date().toISOString(),
+      producer_id: clientData.producer_id,
+      needs_password_change: true,
+      subscription_date: new Date().toISOString(),
       contracts: 0,
-      maxContracts: 5,
-      algoTrading: false,
-      mt5Balance: 0,
-      result: 0,
+      max_contracts: 5,
+      algo_trading: false,
+      mt5_balance: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
     setClients([...clients, newClient]);
@@ -150,4 +151,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
