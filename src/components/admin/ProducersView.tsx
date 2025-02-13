@@ -16,7 +16,7 @@ interface ProducersViewProps {
     name: string;
     email: string;
     initialPassword: string;
-    producerId: number;
+    producer_id: string;
   }) => void;
 }
 
@@ -29,7 +29,7 @@ const ProducersView = ({
   onAddClient,
 }: ProducersViewProps) => {
   const filteredClients = initialClients.filter(
-    client => client.producerId === selectedProducer?.id
+    client => client.producer_id === selectedProducer?.id
   );
 
   return (

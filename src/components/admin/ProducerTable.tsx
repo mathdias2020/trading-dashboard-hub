@@ -34,8 +34,8 @@ const ProducerTable = ({ producers }: ProducerTableProps) => {
                     {producer.status}
                   </span>
                 </td>
-                <td className="p-2">{producer.clients}</td>
-                <td className="p-2">R$ {producer.revenue.toLocaleString()}</td>
+                <td className="p-2">{producer.clients_count}</td>
+                <td className="p-2">R$ {producer.revenue?.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

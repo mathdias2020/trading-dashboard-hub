@@ -17,9 +17,9 @@ import { Pencil } from "lucide-react";
 
 interface ClientManagementTableProps {
   clients: Client[];
-  onToggleStatus?: (clientId: number) => void;
-  onUpdateContracts?: (clientId: number, maxContracts: number) => void;
-  onToggleAlgoTrading?: (clientId: number) => void;
+  onToggleStatus?: (clientId: string) => void;
+  onUpdateContracts?: (clientId: string, maxContracts: number) => void;
+  onToggleAlgoTrading?: (clientId: string) => void;
 }
 
 export const ClientManagementTable = ({ 
@@ -28,14 +28,14 @@ export const ClientManagementTable = ({
   onUpdateContracts,
   onToggleAlgoTrading 
 }: ClientManagementTableProps) => {
-  const [editingClientId, setEditingClientId] = useState<number | null>(null);
+  const [editingClientId, setEditingClientId] = useState<string | null>(null);
   const [newMaxContracts, setNewMaxContracts] = useState<number>(0);
   const { toast } = useToast();
   const { addLimitChangeNotification } = useNotifications();
 
   const handleEditClick = (client: Client) => {
     setEditingClientId(client.id);
-    setNewMaxContracts(client.maxContracts || 0);
+    setNewMaxContracts(client.max_contracts || 0);
   };
 
   const handleSaveClick = (client: Client) => {
@@ -78,7 +78,7 @@ export const ClientManagementTable = ({
                   {client.status}
                 </span>
               </TableCell>
-              <TableCell>{new Date(client.subscriptionDate || '').toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(client.subscription_date || '').toLocaleDateString()}</TableCell>
               <TableCell>{client.contracts}</TableCell>
               <TableCell>
                 {editingClientId === client.id ? (
@@ -99,7 +99,7 @@ export const ClientManagementTable = ({
                   </div>
                 ) : (
                   <div className="flex items-center space-x-2">
-                    <span>{client.maxContracts}</span>
+                    <span>{client.max_contracts}</span>
                     <Button 
                       variant="ghost" 
                       size="icon"
@@ -113,15 +113,15 @@ export const ClientManagementTable = ({
               </TableCell>
               <TableCell>
                 <span className={`px-2 py-1 rounded-full text-xs ${
-                  client.algoTrading ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                  client.algo_trading ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                 }`}>
-                  {client.algoTrading ? "Ativo" : "Inativo"}
+                  {client.algo_trading ? "Ativo" : "Inativo"}
                 </span>
               </TableCell>
-              <TableCell>R$ {client.mt5Balance?.toLocaleString()}</TableCell>
+              <TableCell>R$ {client.mt5_balance?.toLocaleString()}</TableCell>
               <TableCell>
-                <span className={client.result && client.result >= 0 ? "text-green-600" : "text-red-600"}>
-                  R$ {client.result?.toLocaleString()}
+                <span className={client.monthly_result >= 0 ? "text-green-600" : "text-red-600"}>
+                  R$ {client.monthly_result?.toLocaleString()}
                 </span>
               </TableCell>
             </TableRow>

@@ -15,26 +15,20 @@ interface ClientsManagementProps {
     name: string;
     email: string;
     initialPassword: string;
-    producerId: number;
+    producer_id: string;
   }) => void;
 }
 
 const ClientsManagement = ({ selectedProducer, clients: initialClients, onAddClient }: ClientsManagementProps) => {
   const [isAddClientOpen, setIsAddClientOpen] = useState(false);
   const { toast } = useToast();
-
-  const { 
-    clients, 
-    toggleClientStatus, 
-    updateClientContracts, 
-    toggleAlgoTrading 
-  } = useClientManagement(initialClients);
+  const { clients, toggleClientStatus, updateClientContracts, toggleAlgoTrading } = useClientManagement(selectedProducer.id);
 
   const handleAddClient = (clientData: {
     name: string;
     email: string;
     initialPassword: string;
-    producerId: number;
+    producer_id: string;
   }) => {
     if (onAddClient) {
       onAddClient(clientData);
@@ -53,12 +47,12 @@ const ClientsManagement = ({ selectedProducer, clients: initialClients, onAddCli
           isOpen={isAddClientOpen}
           onOpenChange={setIsAddClientOpen}
           onAddClient={handleAddClient}
-          producerId={selectedProducer.id}
+          producer_id={selectedProducer.id}
         />
       </div>
       <div className="space-y-4">
         <ClientManagementTable 
-          clients={clients}
+          clients={clients || initialClients}
           onToggleStatus={toggleClientStatus}
           onUpdateContracts={updateClientContracts}
           onToggleAlgoTrading={toggleAlgoTrading}
