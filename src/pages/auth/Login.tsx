@@ -34,35 +34,46 @@ const Login = () => {
       }
 
       if (data.user) {
-        toast({
-          title: "Login realizado com sucesso",
-          description: "Você será redirecionado em instantes",
-        });
-
-        // Verificar se é admin para redirecionar corretamente
+        // Primeiro, verificar se o usuário é um admin e seu papel
         const { data: adminData } = await supabase
           .from("admins")
           .select("role")
           .eq("id", data.user.id)
           .single();
 
-        if (adminData) {
-          navigate("/admin/dashboard");
-        } else {
-          // Verificar se é produtor
-          const { data: producerData } = await supabase
-            .from("producers")
-            .select("id")
-            .eq("id", data.user.id)
-            .single();
+        console.log("Admin data:", adminData); // Debug log
 
-          if (producerData) {
-            navigate("/producer/dashboard");
-          } else {
-            // Se não for admin nem produtor, é cliente
-            navigate("/client/dashboard");
-          }
+        if (adminData) {
+          toast({
+            title: "Login realizado com sucesso",
+            description: "Redirecionando para o painel administrativo",
+          });
+          navigate("/admin/dashboard");
+          return; // Importante: retornar aqui para evitar as próximas verificações
         }
+
+        // Se não é admin, verificar se é produtor
+        const { data: producerData } = await supabase
+          .from("producers")
+          .select("id")
+          .eq("id", data.user.id)
+          .single();
+
+        if (producerData) {
+          toast({
+            title: "Login realizado com sucesso",
+            description: "Redirecionando para o painel do produtor",
+          });
+          navigate("/producer/dashboard");
+          return; // Importante: retornar aqui para evitar a última verificação
+        }
+
+        // Se chegou aqui, é cliente
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Redirecionando para o painel do cliente",
+        });
+        navigate("/client/dashboard");
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
