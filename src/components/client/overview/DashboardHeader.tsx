@@ -57,4 +57,3 @@ const DashboardHeader = ({ date, onDateChange, clientName }: DashboardHeaderProp
 };
 
 export default DashboardHeader;
-
