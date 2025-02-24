@@ -19,29 +19,31 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
+      if (authError) {
         toast({
           variant: "destructive",
           title: "Erro ao fazer login",
-          description: error.message,
+          description: authError.message,
         });
         return;
       }
 
-      if (data.user) {
-        // Primeiro, verificar se o usuário é um admin e seu papel
-        const { data: adminData } = await supabase
+      if (authData.user) {
+        // Primeiro verifica se é admin e seu papel
+        const { data: adminData, error: adminError } = await supabase
           .from("admins")
           .select("role")
-          .eq("id", data.user.id)
+          .eq("id", authData.user.id)
           .single();
 
+        console.log("Auth user ID:", authData.user.id); // Debug log
         console.log("Admin data:", adminData); // Debug log
+        console.log("Admin error:", adminError); // Debug log
 
         if (adminData) {
           toast({
@@ -49,14 +51,15 @@ const Login = () => {
             description: "Redirecionando para o painel administrativo",
           });
           navigate("/admin/dashboard");
-          return; // Importante: retornar aqui para evitar as próximas verificações
+          setIsLoading(false);
+          return;
         }
 
-        // Se não é admin, verificar se é produtor
+        // Se não é admin, verifica se é produtor
         const { data: producerData } = await supabase
           .from("producers")
           .select("id")
-          .eq("id", data.user.id)
+          .eq("id", authData.user.id)
           .single();
 
         if (producerData) {
@@ -65,7 +68,8 @@ const Login = () => {
             description: "Redirecionando para o painel do produtor",
           });
           navigate("/producer/dashboard");
-          return; // Importante: retornar aqui para evitar a última verificação
+          setIsLoading(false);
+          return;
         }
 
         // Se chegou aqui, é cliente
