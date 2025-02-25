@@ -19,7 +19,6 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Primeiro, tenta fazer login
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -35,7 +34,7 @@ const Login = () => {
         return;
       }
 
-      if (!authData.user) {
+      if (!authData?.user?.id) {
         toast({
           variant: "destructive",
           title: "Erro ao fazer login",
@@ -45,12 +44,19 @@ const Login = () => {
         return;
       }
 
+      const userId = authData.user.id;
+      console.log("User ID:", userId);
+
       // Verifica primeiro se é admin
       const { data: adminData, error: adminError } = await supabase
         .from("admins")
         .select("role")
-        .eq("id", authData.user.id)
-        .single();
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (adminError) {
+        console.error("Erro ao verificar admin:", adminError);
+      }
 
       if (adminData) {
         console.log("Admin encontrado:", adminData);
@@ -64,11 +70,15 @@ const Login = () => {
       }
 
       // Se não é admin, verifica se é produtor
-      const { data: producerData } = await supabase
+      const { data: producerData, error: producerError } = await supabase
         .from("producers")
         .select("id")
-        .eq("id", authData.user.id)
-        .single();
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (producerError) {
+        console.error("Erro ao verificar produtor:", producerError);
+      }
 
       if (producerData) {
         console.log("Produtor encontrado:", producerData);
@@ -81,13 +91,31 @@ const Login = () => {
         return;
       }
 
-      // Se não é admin nem produtor, assume que é cliente
-      console.log("Redirecionando para painel do cliente");
-      toast({
-        title: "Login realizado com sucesso",
-        description: "Redirecionando para o painel do cliente",
-      });
-      navigate("/client/dashboard");
+      // Se não é admin nem produtor, verifica se é cliente
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (clientError) {
+        console.error("Erro ao verificar cliente:", clientError);
+      }
+
+      if (clientData) {
+        console.log("Cliente encontrado:", clientData);
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Redirecionando para o painel do cliente",
+        });
+        navigate("/client/dashboard");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao fazer login",
+          description: "Usuário não encontrado em nenhuma categoria",
+        });
+      }
       
     } catch (error) {
       console.error("Erro ao fazer login:", error);
