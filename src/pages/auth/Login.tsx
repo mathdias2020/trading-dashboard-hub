@@ -19,6 +19,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      // Primeiro, tenta fazer login
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -30,55 +31,64 @@ const Login = () => {
           title: "Erro ao fazer login",
           description: authError.message,
         });
+        setIsLoading(false);
         return;
       }
 
-      if (authData.user) {
-        // Primeiro verifica se é admin e seu papel
-        const { data: adminData, error: adminError } = await supabase
-          .from("admins")
-          .select("role")
-          .eq("id", authData.user.id)
-          .single();
+      if (!authData.user) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao fazer login",
+          description: "Usuário não encontrado",
+        });
+        setIsLoading(false);
+        return;
+      }
 
-        console.log("Auth user ID:", authData.user.id); // Debug log
-        console.log("Admin data:", adminData); // Debug log
-        console.log("Admin error:", adminError); // Debug log
+      // Verifica primeiro se é admin
+      const { data: adminData, error: adminError } = await supabase
+        .from("admins")
+        .select("role")
+        .eq("id", authData.user.id)
+        .single();
 
-        if (adminData) {
-          toast({
-            title: "Login realizado com sucesso",
-            description: "Redirecionando para o painel administrativo",
-          });
-          navigate("/admin/dashboard");
-          setIsLoading(false);
-          return;
-        }
-
-        // Se não é admin, verifica se é produtor
-        const { data: producerData } = await supabase
-          .from("producers")
-          .select("id")
-          .eq("id", authData.user.id)
-          .single();
-
-        if (producerData) {
-          toast({
-            title: "Login realizado com sucesso",
-            description: "Redirecionando para o painel do produtor",
-          });
-          navigate("/producer/dashboard");
-          setIsLoading(false);
-          return;
-        }
-
-        // Se chegou aqui, é cliente
+      if (adminData) {
+        console.log("Admin encontrado:", adminData);
         toast({
           title: "Login realizado com sucesso",
-          description: "Redirecionando para o painel do cliente",
+          description: "Redirecionando para o painel administrativo",
         });
-        navigate("/client/dashboard");
+        navigate("/admin/dashboard");
+        setIsLoading(false);
+        return;
       }
+
+      // Se não é admin, verifica se é produtor
+      const { data: producerData } = await supabase
+        .from("producers")
+        .select("id")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (producerData) {
+        console.log("Produtor encontrado:", producerData);
+        toast({
+          title: "Login realizado com sucesso",
+          description: "Redirecionando para o painel do produtor",
+        });
+        navigate("/producer/dashboard");
+        setIsLoading(false);
+        return;
+      }
+
+      // Se não é admin nem produtor, assume que é cliente
+      console.log("Redirecionando para painel do cliente");
+      toast({
+        title: "Login realizado com sucesso",
+        description: "Redirecionando para o painel do cliente",
+      });
+      navigate("/client/dashboard");
+      
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       toast({
